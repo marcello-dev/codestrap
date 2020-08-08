@@ -1,5 +1,5 @@
 {
-  "name": "gitpod-init",
+  "name": "codestrap",
   "version": "1.0",
   "description": "Extension to bootstrap a Gitpod project",
   "permissions": ["activeTab","declarativeContent","storage","https://api.github.com/"],
