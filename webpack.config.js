@@ -1,5 +1,7 @@
 // Copyright 2020 Marcello Monachesi
 const path = require('path');
+// Plugin to copy resources
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -12,4 +14,15 @@ module.exports = {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
+  
+  plugins: [
+    new CopyPlugin({ // Move resources to dist folder
+      patterns: [
+        { from: 'src/popup.html' },
+        { from: 'src/options.html' },
+        { from: 'src/manifest.json' },
+        { from: 'src/images', to: 'images',toType: 'dir',}
+      ],
+    }),
+  ],
 };
