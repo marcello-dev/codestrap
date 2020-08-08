@@ -1,6 +1,6 @@
 {
   "name": "codestrap",
-  "version": "1.0",
+  "version": "0.0.1",
   "description": "Extension to bootstrap a Gitpod project",
   "permissions": ["activeTab","declarativeContent","storage","https://api.github.com/"],
   "options_page": "options.html",
