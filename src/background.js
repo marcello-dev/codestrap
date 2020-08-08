@@ -21,6 +21,7 @@ chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
       switch (request.directive) {
       case "popup-click":
+          console.log("Received popup-click");
           chrome.tabs.executeScript(null, { // defaults to the current tab
               file: "contentscript.bundle.js", 
               allFrames: true
