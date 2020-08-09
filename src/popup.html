@@ -1,16 +1,25 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <style>
-      button {
-        height: 30px;
-        width: 30px;
-        outline: none;
-      }
-    </style>
-  </head>
-  <body>
-    <button id="changeColor"></button>
-    <script src="popup.bundle.js"></script>
-  </body>
+
+<head>
+  <style>
+    button {
+      height: 30px;
+      width: 30px;
+      outline: none;
+    }
+  </style>
+  <script src="popup.js"></script>
+</head>
+
+<body>
+  <button id="changeColor"></button>
+  <div id="user_info"></div>
+  <br><b>Sing here:</b> <br>
+  <button id="signin" style="display:none">Sign in</button>
+  <button id="revoke" style="display:none">Revoke token</button>
+  <br><b>Your repos:</b> <br>
+  <textarea id="user_repos" style="width: 95%; min-height: 200px"></textarea>
+</body>
+
 </html>
