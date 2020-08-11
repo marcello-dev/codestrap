@@ -7,7 +7,7 @@ module.exports = {
   entry: {
       //popup: './src/popup.js',
       options: './src/options.js',
-      background: './src/background.js',
+      //background: './src/background.js',
       contentscript: './src/contentscript.js'
     },
   output: {
@@ -22,6 +22,7 @@ module.exports = {
         { from: 'src/options.html' },
         { from: 'src/manifest.json' },
         { from: 'src/popup.js'},
+        { from: 'src/background.js'},
         { from: 'images', to: 'images',toType: 'dir',}
       ],
     }),

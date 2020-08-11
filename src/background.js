@@ -5,16 +5,6 @@ chrome.runtime.onInstalled.addListener(function () {
   chrome.storage.sync.set({ color: '#3aa757' }, function () {
     console.log("The color is green.");
   });
-
-  chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
-    chrome.declarativeContent.onPageChanged.addRules([{
-      conditions: [new chrome.declarativeContent.PageStateMatcher({
-        pageUrl: { hostEquals: 'developer.chrome.com' },
-      })
-      ],
-      actions: [new chrome.declarativeContent.ShowPageAction()]
-    }]);
-  });
 });
 
 chrome.runtime.onMessage.addListener(
@@ -22,14 +12,32 @@ chrome.runtime.onMessage.addListener(
     switch (request.directive) {
       case "popup-click":
         console.log("Received popup-click");
-        chrome.tabs.executeScript(null, { // defaults to the current tab
-          file: "contentscript.bundle.js",
-          allFrames: true
-        });
+        
         sendResponse({}); // sending back empty response to sender
         break;
+      case "create-project":
+            console.log("Received create-project with name: ",request.pname);
+            // chrome.tabs.executeScript(null, { // defaults to the current tab
+            //     file: "contentscript.bundle.js",
+            //     allFrames: true
+            // });
+
+            chrome.storage.local.set({
+                pname: request.pname
+            }, function () {
+                chrome.tabs.executeScript(null, {
+                    file: "contentscript.bundle.js",
+                    allFrames: true
+                }, function(){
+                    console.log('Content script finished');
+                });
+            });
+
+            sendResponse({}); // sending back empty response to sender
+            break;
       case "log":
         console.log(request.message);
+        sendResponse({});
         break;
       default:
         alert("Handler not found for request '" + request + "' from script to background from " + sender);

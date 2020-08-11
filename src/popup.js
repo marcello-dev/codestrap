@@ -2,23 +2,40 @@
 
 'use strict';
 
+let createProject = document.getElementById('cproject');
+
+createProject.onclick = function (element) {
+  var pnameText = document.getElementById('pname');
+  console.log('Got from user project',pnameText);
+  var projectName = pnameText.value;
+  console.log('Project name: ',projectName);
+  chrome.runtime.sendMessage({
+    directive: "create-project", pname: projectName
+  }, function (response) {
+    
+    //this.close(); // close popup
+  });
+};
+
+
 var gh = (function () {
   'use strict';
 
   var signin_button;
   var revoke_button;
   var user_info_div;
+  var user_url;
 
   var tokenFetcher = (function () {
-    // Replace clientId and clientSecret with values obtained by you for your
-    // application https://github.com/settings/applications.
-    var clientId = '';
-    // Note that in a real-production app, you may not want to store
-    // clientSecret in your App code.
-    var clientSecret = '';
+    // If a malicious party uses client_id and client_secret 
+    // to attempt to impersonate the app, and if it gets approved 
+    // then the authorization code will be sent to only 
+    // your approved redirect url and not the malicious party
+    var clientId = 'e1e5d70594447067995b';
+    var clientSecret = '00768ec935e00abfd20d28171757ea0d2e98ed73';
 
     var redirectUri = chrome.identity.getRedirectURL('provider_cb');
-    
+
     var redirectRe = new RegExp(redirectUri + '[#\?](.*)');
 
     var access_token = null;
@@ -35,15 +52,14 @@ var gh = (function () {
           'interactive': interactive,
           'url': 'https://github.com/login/oauth/authorize' +
             '?client_id=' + clientId +
+            // Request access to public and private repos
+            '&scope=repo' +
             '&redirect_uri=' + encodeURIComponent(redirectUri)
         }
 
         chrome.identity.launchWebAuthFlow(options, function (redirectUri) {
           console.log('launchWebAuthFlow completed', chrome.runtime.lastError,
             redirectUri);
-
-            chrome.runtime.sendMessage({ directive: "log", message:'launchWebAuthFlow completed. last err: '+  chrome.runtime.lastError+' redirecturi: '+redirectUri}, function (response) {});
-
           if (chrome.runtime.lastError) {
             callback(new Error(chrome.runtime.lastError));
             return;
@@ -75,7 +91,7 @@ var gh = (function () {
 
         function handleProviderResponse(values) {
           console.log('providerResponse', values);
-          chrome.runtime.sendMessage({ directive: "log", message:'provideResponse '+values }, function (response) {});
+          //chrome.runtime.sendMessage({ directive: "log", message:'provideResponse '+values }, function (response) {});
           if (values.hasOwnProperty('access_token'))
             setAccessToken(values.access_token);
           // If response does not have an access_token, it might have the code,
@@ -102,33 +118,46 @@ var gh = (function () {
             if (this.status === 200) {
               var response = JSON.parse(this.responseText);
               console.log(response);
-              chrome.runtime.sendMessage({ directive: "log", message:'exchange log for token response '+response }, function (response) {});
+              //chrome.runtime.sendMessage({ directive: "log", message:'exchange log for token response '+response }, function (response) {});
               if (response.hasOwnProperty('access_token')) {
                 setAccessToken(response.access_token);
               } else {
-                chrome.runtime.sendMessage({ directive: "log", message:'Cannot obtain access_token from code.'}, function (response) {});
+                //chrome.runtime.sendMessage({ directive: "log", message:'Cannot obtain access_token from code.'}, function (response) {});
                 callback(new Error('Cannot obtain access_token from code.'));
               }
             } else {
               console.log('code exchange status:', this.status);
-              chrome.runtime.sendMessage({ directive: "log", message:'code exchange status: '+this.status }, function (response) {});
+              //chrome.runtime.sendMessage({ directive: "log", message:'code exchange status: '+this.status }, function (response) {});
               callback(new Error('Code exchange failed'));
             }
           };
           xhr.send();
-        }   
+        }
 
         function setAccessToken(token) {
           access_token = token;
           console.log('Setting access_token: ', access_token);
-          chrome.runtime.sendMessage({ directive: "log", message:'Setting access_token: '+access_token }, function (response) {});
+          chrome.storage.sync.set({ access_token: token }, function () {
+            console.log("Save access_token in storage: " + token);
+          });
           callback(null, access_token);
         }
       },
 
       removeCachedToken: function (token_to_remove) {
-        if (access_token == token_to_remove)
+        if (access_token == token_to_remove) {
           access_token = null;
+
+          chrome.storage.sync.get(['access_token'], function (result) {
+            console.log('Cached token: ' + result);
+            if (result !== null) {
+              chrome.storage.sync.set({ access_token: null }, function () {
+                console.log("Removed cached token from storage");
+              });
+            }
+          });
+
+        }
       }
     }
   })();
@@ -138,13 +167,11 @@ var gh = (function () {
     var access_token;
 
     console.log('xhrWithAuth', method, url, interactive);
-    chrome.runtime.sendMessage({ directive: "log", message:'xhrWithAuth: '+method +' url '+url+' interactive '+interactive }, function (response) {});
     getToken();
 
     function getToken() {
       tokenFetcher.getToken(interactive, function (error, token) {
         console.log('token fetch', error, token);
-        chrome.runtime.sendMessage({ directive: "log", message:'token fetch '+error+' token: '+token }, function (response) {});
         if (error) {
           callback(error);
           return;
@@ -166,7 +193,6 @@ var gh = (function () {
     function requestComplete() {
       console.log('requestComplete', this.status, this.response);
 
-      chrome.runtime.sendMessage({ directive: "log", message:'requestComplete' }, function (response) {});
       if ((this.status < 200 || this.status >= 300) && retry) {
         retry = false;
         tokenFetcher.removeCachedToken(access_token);
@@ -203,7 +229,6 @@ var gh = (function () {
   function onUserInfoFetched(error, status, response) {
     if (!error && status == 200) {
       console.log("Got the following user info: " + response);
-      chrome.runtime.sendMessage({ directive: "log", message:'get following user infor: '+response }, function (response) {});
       var user_info = JSON.parse(response);
       populateUserInfo(user_info);
       hideButton(signin_button);
@@ -211,9 +236,6 @@ var gh = (function () {
       fetchUserRepos(user_info["repos_url"]);
     } else {
       console.log('infoFetch failed', error, status);
-      chrome.runtime.sendMessage({ directive: "log", message:'infoFetch failed: '+error.message+' status: '+status }, function (response) {});
-      chrome.runtime.sendMessage({ directive: "log", message:'infoFetch failed: '+error.method+' status: '+status }, function (response) {});
-      chrome.runtime.sendMessage({ directive: "log", message:'infoFetch failed: '+error.name+' status: '+status }, function (response) {});
       showButton(signin_button);
     }
   }
@@ -221,6 +243,7 @@ var gh = (function () {
   function populateUserInfo(user_info) {
     var elem = user_info_div;
     var nameElem = document.createElement('div');
+    user_url=user_info.html_url;
     nameElem.innerHTML = "<b>Hello " + user_info.name + "</b><br>"
       + "Your github page is: " + user_info.html_url;
     elem.appendChild(nameElem);
@@ -237,7 +260,6 @@ var gh = (function () {
     elem.value = '';
     if (!error && status == 200) {
       console.log("Got the following user repos:", response);
-      chrome.runtime.sendMessage({ directive: "log", message:'got following repos: '+response }, function (response) {});
       var user_repos = JSON.parse(response);
       user_repos.forEach(function (repo) {
         if (repo.private) {
@@ -248,7 +270,6 @@ var gh = (function () {
         elem.value += '\n';
       });
     } else {
-      chrome.runtime.sendMessage({ directive: "log", message:'infoFetch failed: '+error+' status: '+status }, function (response) {});
       console.log('infoFetch failed', error, status);
     }
 
@@ -290,13 +311,10 @@ var gh = (function () {
       user_info_div = document.querySelector('#user_info');
 
       console.log(signin_button, revoke_button, user_info_div);
-      chrome.runtime.sendMessage({ directive: "log", message:'signin but: '+signin_button+' revoke button: '+revoke_button+' user_info_div: '+user_info_div }, function (response) {});
-
       showButton(signin_button);
       getUserInfo(false);
     }
   };
 })();
 
-
-window.onload = gh.onload;
+gh.onload();
