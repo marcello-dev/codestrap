@@ -21,13 +21,10 @@ chrome.storage.sync.get(['access_token'], function (result) {
         }).then(({ data }) => {
             console.log("Sent and received: ", data);
             console.log('New repo: ' + data.html_url);
-
             // redirect to: gitpod.io/#<repo-name>
-            console.log('User url: '+data.html_url);
             window.open('https://gitpod.io/#'+data.html_url);
         });
         chrome.storage.local.remove('pconfig');
     });
 
 });
-

@@ -8,9 +8,9 @@
 
 <body>
   <div id="pconfig" style="display:none">
-    <label for="pname">Project name:</label>
+    <label for="pname">New project name:</label>
     <input type="text" id="pname" name="pname">
-    <label for="ptype_picker">Project type:</label>
+    <label for="ptype_picker">Type:</label>
     <select name="ptype_picker" id="ptype_picker">
       <option value="java">Java</option>
       <option value="java-maven">Java Maven</option>
@@ -19,12 +19,16 @@
     <br><br>
     <button id="cproject">Create</button><br><br>
   </div>
+  <div id="loading">
+    <img id="loading-image" src="images/loading.gif" alt="Loading..." />
+  </div>
   <div id="user_info"></div>
   <button id="signin" style="display:none">Sign in</button>
   <button id="revoke" style="display:none">Revoke token</button>
+  <!-- Do not show user repos
   <br><b>Your repos:</b><br>
   <textarea id="user_repos" style="width: 95%; min-height: 200px"></textarea>
-
+  -->
   <script src="popup.js"></script>
 </body>
 

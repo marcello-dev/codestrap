@@ -31,8 +31,10 @@ var gh = (function () {
   var signin_button;
   var revoke_button;
   var user_info_div;
-  var user_url;
   var projectConfig;
+  var loadingImage;
+  var user_url;
+  
 
   var tokenFetcher = (function () {
     // If a malicious party uses client_id and client_secret 
@@ -243,6 +245,10 @@ var gh = (function () {
     button.disabled = true;
   }
 
+  function hideLoadingImage(){
+    loadingImage.style.display = 'none';
+  }
+
   function onUserInfoFetched(error, status, response) {
     if (!error && status == 200) {
       console.log("Got the following user info: " + response);
@@ -250,12 +256,16 @@ var gh = (function () {
       populateUserInfo(user_info);
       hideButton(signin_button);
       showProjectConfig();
-      showButton(revoke_button);
-      fetchUserRepos(user_info["repos_url"]);
+      // Do not show revoke button
+      //showButton(revoke_button);
+      // Do not fetch user repo to reduce load time
+      //fetchUserRepos(user_info["repos_url"]);
     } else {
       console.log('infoFetch failed', error, status);
       showButton(signin_button);
+      
     }
+    hideLoadingImage();
   }
 
   function populateUserInfo(user_info) {
@@ -330,11 +340,13 @@ var gh = (function () {
 
       projectConfig = document.querySelector('#pconfig');
 
+      loadingImage = document.querySelector('#loading');
+
       console.log(signin_button, revoke_button, user_info_div);
-      showButton(signin_button);
+      //showButton(signin_button);
       getUserInfo(false);
     }
   };
 })();
 
-gh.onload();
+window.onload=gh.onload;
