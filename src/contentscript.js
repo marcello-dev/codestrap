@@ -23,7 +23,7 @@ chrome.storage.sync.get(['access_token'], function (result) {
             console.log('User url: '+data.html_url);
             window.open('https://gitpod.io/#'+data.html_url);
         });
-        //chrome.storage.local.remove('updateTextTo');
+        chrome.storage.local.remove('pname');
     });
 
 });

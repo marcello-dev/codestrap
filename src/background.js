@@ -2,9 +2,7 @@
 'use strict';
 
 chrome.runtime.onInstalled.addListener(function () {
-  chrome.storage.sync.set({ color: '#3aa757' }, function () {
-    console.log("The color is green.");
-  });
+    console.log("Extension installed");
 });
 
 chrome.runtime.onMessage.addListener(
@@ -12,16 +10,11 @@ chrome.runtime.onMessage.addListener(
     switch (request.directive) {
       case "popup-click":
         console.log("Received popup-click");
-        
         sendResponse({}); // sending back empty response to sender
         break;
       case "create-project":
             console.log("Received create-project with name: ",request.pname);
-            // chrome.tabs.executeScript(null, { // defaults to the current tab
-            //     file: "contentscript.bundle.js",
-            //     allFrames: true
-            // });
-
+            
             chrome.storage.local.set({
                 pname: request.pname
             }, function () {
@@ -35,10 +28,6 @@ chrome.runtime.onMessage.addListener(
 
             sendResponse({}); // sending back empty response to sender
             break;
-      case "log":
-        console.log(request.message);
-        sendResponse({});
-        break;
       default:
         alert("Handler not found for request '" + request + "' from script to background from " + sender);
     }

@@ -4,7 +4,7 @@
 
 let createProject = document.getElementById('cproject');
 
-createProject.onclick = function (element) {
+createProject.onclick = function () {
   var pnameText = document.getElementById('pname');
   console.log('Got from user project',pnameText);
   var projectName = pnameText.value;
@@ -25,12 +25,14 @@ var gh = (function () {
   var revoke_button;
   var user_info_div;
   var user_url;
+  var projectConfig;
 
   var tokenFetcher = (function () {
     // If a malicious party uses client_id and client_secret 
     // to attempt to impersonate the app, and if it gets approved 
     // then the authorization code will be sent to only 
-    // your approved redirect url and not the malicious party
+    // the approved redirect url and not the malicious party.
+    // So keeping the clientSecrent in the source file is considered safe.
 
     //OAuth App of code-strap GitHub organization
     var clientId = '82a79620cdd7c46c5db9';
@@ -55,7 +57,7 @@ var gh = (function () {
           'interactive': interactive,
           'url': 'https://github.com/login/oauth/authorize' +
             '?client_id=' + clientId +
-            // Request access to public and private repos
+            // Request read/write privileges on public and private repos
             '&scope=repo' +
             '&redirect_uri=' + encodeURIComponent(redirectUri)
         }
@@ -216,6 +218,11 @@ var gh = (function () {
 
   // Functions updating the User Interface:
 
+  function showProjectConfig() {
+    projectConfig.style.display = 'inline';
+    projectConfig.disabled = false;
+  }
+
   function showButton(button) {
     button.style.display = 'inline';
     button.disabled = false;
@@ -235,6 +242,7 @@ var gh = (function () {
       var user_info = JSON.parse(response);
       populateUserInfo(user_info);
       hideButton(signin_button);
+      showProjectConfig();
       showButton(revoke_button);
       fetchUserRepos(user_info["repos_url"]);
     } else {
@@ -312,6 +320,8 @@ var gh = (function () {
       revoke_button.onclick = revokeToken;
 
       user_info_div = document.querySelector('#user_info');
+
+      projectConfig = document.querySelector('#pconfig');
 
       console.log(signin_button, revoke_button, user_info_div);
       showButton(signin_button);
