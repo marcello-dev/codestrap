@@ -20,6 +20,7 @@ createProject.onclick = function () {
     directive: "create-project", pname: projectName, ptype: projectType
   }, function (response) {
     // Add loading GIF
+    console.log('Got response from background script');
   });
 };
 
