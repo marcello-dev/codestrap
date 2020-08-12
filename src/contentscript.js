@@ -1,7 +1,7 @@
 // Copyright 2020 Marcello Monachesi
 import { Octokit } from "@octokit/rest";
 
-console.log("before init contentscript.js");
+console.log('Start content script');
 
 chrome.storage.sync.get(['access_token'], function (result) {
     console.log('Content script fetched access_token:' + result.access_token);
@@ -16,7 +16,7 @@ chrome.storage.sync.get(['access_token'], function (result) {
             name: result.pname,
             private: true
         }).then(({ data }) => {
-            console.log("Sent and received: " + data);
+            console.log("Sent and received: ", data);
             console.log('New repo: ' + data.html_url);
 
             // redirect to: gitpod.io/#<repo-name>

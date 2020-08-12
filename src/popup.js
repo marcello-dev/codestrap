@@ -44,10 +44,11 @@ var gh = (function () {
       getToken: function (interactive, callback) {
         // In case we already have an access_token cached, simply return it.
         if (access_token) {
+          console.log("Found cached token: ",access_token);
           callback(null, access_token);
           return;
         }
-
+        console.log("Not found cached token, proceding with interactive authorization");
         var options = {
           'interactive': interactive,
           'url': 'https://github.com/login/oauth/authorize' +
