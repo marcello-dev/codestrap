@@ -9,7 +9,16 @@
 <body>
   <div id="pconfig" style="display:none">
     <label for="pname">Project name:</label>
-    <input type="text" id="pname" name="pname"><br><br>
+    <input type="text" id="pname" name="pname">
+    <label for="ptype_picker">Project type:</label>
+    <select name="ptype_picker" id="ptype_picker">
+      <option value="java">Java</option>
+      <option value="java-maven">Java Maven</option>
+      <option value="springboot-maven">SpringBoot Maven</option>
+      <option value="springboot-gradle">SpringBoot Gradle</option>
+      <option value="python">Python</option>
+    </select>
+    <br><br>
     <button id="cproject">Create</button><br><br>
   </div>
   <div id="user_info"></div>

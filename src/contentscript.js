@@ -8,12 +8,15 @@ chrome.storage.sync.get(['access_token'], function (result) {
     const octokit = new Octokit({ auth: result.access_token });
 
     console.log("Sending request for template");
-    chrome.storage.local.get('pname', function (result) {
-        console.log("Creating project name: "+result.pname);
+    chrome.storage.local.get('pconfig', function (result) {
+        console.log("Creating project: ",result.pconfig);
+        var pname = result.pconfig.pname;
+        var ptype = result.pconfig.ptype;
+
         octokit.repos.createUsingTemplate({
             template_owner: 'code-strap',
-            template_repo: 'java',
-            name: result.pname,
+            template_repo: ptype,
+            name: pname,
             private: true
         }).then(({ data }) => {
             console.log("Sent and received: ", data);

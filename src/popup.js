@@ -5,15 +5,21 @@
 let createProject = document.getElementById('cproject');
 
 createProject.onclick = function () {
+  // Get project name
   var pnameText = document.getElementById('pname');
   console.log('Got from user project',pnameText);
   var projectName = pnameText.value;
   console.log('Project name: ',projectName);
+
+  // Get Project type
+  var ptypePicker = document.getElementById("ptype_picker");
+  var projectType = ptypePicker.options[ptypePicker.selectedIndex].value;
+
+  // Send message to background script
   chrome.runtime.sendMessage({
-    directive: "create-project", pname: projectName
+    directive: "create-project", pname: projectName, ptype: projectType
   }, function (response) {
-    
-    //this.close(); // close popup
+    // Add loading GIF
   });
 };
 

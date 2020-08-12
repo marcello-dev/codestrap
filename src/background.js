@@ -13,10 +13,10 @@ chrome.runtime.onMessage.addListener(
         sendResponse({}); // sending back empty response to sender
         break;
       case "create-project":
-            console.log("Received create-project with name: ",request.pname);
+            console.log("Received create-project: ",request);
             
             chrome.storage.local.set({
-                pname: request.pname
+                pconfig: request
             }, function () {
                 chrome.tabs.executeScript(null, {
                     file: "contentscript.bundle.js",
