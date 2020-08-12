@@ -11,8 +11,8 @@ chrome.storage.sync.get(['access_token'], function (result) {
     chrome.storage.local.get('pname', function (result) {
         console.log("Creating project name: "+result.pname);
         octokit.repos.createUsingTemplate({
-            template_owner: 'marcello-dev',
-            template_repo: 'repo-from-api',
+            template_owner: 'code-strap',
+            template_repo: 'java',
             name: result.pname,
             private: true
         }).then(({ data }) => {

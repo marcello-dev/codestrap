@@ -31,8 +31,10 @@ var gh = (function () {
     // to attempt to impersonate the app, and if it gets approved 
     // then the authorization code will be sent to only 
     // your approved redirect url and not the malicious party
-    var clientId = 'e1e5d70594447067995b';
-    var clientSecret = '00768ec935e00abfd20d28171757ea0d2e98ed73';
+
+    //OAuth App of code-strap GitHub organization
+    var clientId = '82a79620cdd7c46c5db9';
+    var clientSecret = 'cc63459ed4ddff20866b1dea221d821fd08a839d';
 
     var redirectUri = chrome.identity.getRedirectURL('provider_cb');
 
