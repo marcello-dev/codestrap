@@ -1,6 +1,6 @@
 {
   "name": "Codestrap",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Extension to bootstrap a new project",
   "permissions": [
     "storage",
