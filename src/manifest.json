@@ -18,6 +18,7 @@
     "default_popup": "popup.html",
     "default_icon": {
       "16": "images/16px.png",
+      "24": "images/24px.png",
       "32": "images/32px.png",
       "64": "images/64px.png",
       "128": "images/128px.png"
@@ -25,6 +26,7 @@
   },
   "icons": {
     "16": "images/16px.png",
+    "24": "images/24px.png",
     "32": "images/32px.png",
     "64": "images/64px.png",
     "128": "images/128px.png"
