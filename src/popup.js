@@ -3,38 +3,66 @@
 'use strict';
 
 let createProject = document.getElementById('cproject');
+var errorMessage = document.getElementById('error_message');
 
 createProject.onclick = function () {
-  // Get project name
-  var pnameText = document.getElementById('pname');
-  console.log('Got from user project',pnameText);
-  var projectName = pnameText.value;
-  console.log('Project name: ',projectName);
+  errorMessage.innerHTML = '';
+  // Validate project name
+  var pnameElement = document.getElementById('pname');
+  if (!pnameElement.checkValidity()) {
+    errorMessage.innerHTML = 'Please provide the project name';
+    return false;
+  }
+
+  var projectName = pnameElement.value;
+  console.log('Project name: ', projectName);
 
   // Get Project type
   var ptypePicker = document.getElementById("ptype_picker");
   var projectType = ptypePicker.options[ptypePicker.selectedIndex].value;
 
+  var isPrivate = document.getElementById("isprivate").checked;
+
   // Send message to background script
   chrome.runtime.sendMessage({
-    directive: "create-project", pname: projectName, ptype: projectType
-  }, function (response) {
-    // Add loading GIF
-    console.log('Got response from background script');
+    directive: "create-project", pname: projectName, ptype: projectType, isPrivate: isPrivate
   });
+
+  var loadingImage = document.querySelector('#loading_for_creation');
+  showLoadingImage(loadingImage);
+  createProject.disabled = true;
+  return true;
 };
 
+chrome.runtime.onMessage.addListener(
+  function (request, sender, sendResponse) {
+    console.log('Popup got message:', request);
+    if (request.errorMessage) {
+      var loadingImage = document.querySelector('#loading_for_creation');
+      hideLoadingImage(loadingImage);
+      errorMessage.innerHTML = request.errorMessage;
+      createProject.disabled = false;
+    }
+  }
+);
+
+function showLoadingImage(loadingImage) {
+  loadingImage.style.display = 'inline';
+  loadingImage.disabled = false;
+}
+
+function hideLoadingImage(loadingImage) {
+  loadingImage.style.display = 'none';
+}
 
 var gh = (function () {
   'use strict';
 
   var signin_button;
-  var revoke_button;
   var user_info_div;
   var projectConfig;
   var loadingImage;
-  var user_url;
-  
+
 
   var tokenFetcher = (function () {
     // If a malicious party uses client_id and client_secret 
@@ -57,7 +85,7 @@ var gh = (function () {
       getToken: function (interactive, callback) {
         // In case we already have an access_token cached, simply return it.
         if (access_token) {
-          console.log("Found cached token: ",access_token);
+          console.log("Found cached token: ", access_token);
           callback(null, access_token);
           return;
         }
@@ -105,7 +133,6 @@ var gh = (function () {
 
         function handleProviderResponse(values) {
           console.log('providerResponse', values);
-          //chrome.runtime.sendMessage({ directive: "log", message:'provideResponse '+values }, function (response) {});
           if (values.hasOwnProperty('access_token'))
             setAccessToken(values.access_token);
           // If response does not have an access_token, it might have the code,
@@ -132,16 +159,13 @@ var gh = (function () {
             if (this.status === 200) {
               var response = JSON.parse(this.responseText);
               console.log(response);
-              //chrome.runtime.sendMessage({ directive: "log", message:'exchange log for token response '+response }, function (response) {});
               if (response.hasOwnProperty('access_token')) {
                 setAccessToken(response.access_token);
               } else {
-                //chrome.runtime.sendMessage({ directive: "log", message:'Cannot obtain access_token from code.'}, function (response) {});
                 callback(new Error('Cannot obtain access_token from code.'));
               }
             } else {
               console.log('code exchange status:', this.status);
-              //chrome.runtime.sendMessage({ directive: "log", message:'code exchange status: '+this.status }, function (response) {});
               callback(new Error('Code exchange failed'));
             }
           };
@@ -150,9 +174,8 @@ var gh = (function () {
 
         function setAccessToken(token) {
           access_token = token;
-          console.log('Setting access_token: ', access_token);
           chrome.storage.sync.set({ access_token: token }, function () {
-            console.log("Save access_token in storage: " + token);
+            console.log("Saved access_token in storage");
           });
           callback(null, access_token);
         }
@@ -185,12 +208,12 @@ var gh = (function () {
 
     function getToken() {
       tokenFetcher.getToken(interactive, function (error, token) {
-        console.log('token fetch', error, token);
+        console.log('token fetch: ', error);
         if (error) {
           callback(error);
           return;
         }
-
+        console.log('token fetched correctly');
         access_token = token;
         requestStart();
       });
@@ -245,33 +268,28 @@ var gh = (function () {
     button.disabled = true;
   }
 
-  function hideLoadingImage(){
+  function hideLoadingImage(loadingImage) {
     loadingImage.style.display = 'none';
   }
 
   function onUserInfoFetched(error, status, response) {
     if (!error && status == 200) {
-      console.log("Got the following user info: " + response);
+      console.log("Got the user info");
       var user_info = JSON.parse(response);
       populateUserInfo(user_info);
       hideButton(signin_button);
       showProjectConfig();
-      // Do not show revoke button
-      //showButton(revoke_button);
-      // Do not fetch user repo to reduce load time
-      //fetchUserRepos(user_info["repos_url"]);
     } else {
       console.log('infoFetch failed', error, status);
       showButton(signin_button);
-      
+
     }
-    hideLoadingImage();
+    hideLoadingImage(loadingImage);
   }
 
   function populateUserInfo(user_info) {
     var elem = user_info_div;
     var nameElem = document.createElement('div');
-    user_url=user_info.html_url;
     nameElem.innerHTML = "<b>Hello " + user_info.name + "</b><br>"
       + "Your github page is: " + user_info.html_url;
     elem.appendChild(nameElem);
@@ -324,7 +342,6 @@ var gh = (function () {
     // in again. If the user dismissed the page they were presented with,
     // Sign in button will simply sign them in.
     user_info_div.textContent = '';
-    hideButton(revoke_button);
     showButton(signin_button);
   }
 
@@ -333,20 +350,16 @@ var gh = (function () {
       signin_button = document.querySelector('#signin');
       signin_button.onclick = interactiveSignIn;
 
-      revoke_button = document.querySelector('#revoke');
-      revoke_button.onclick = revokeToken;
-
       user_info_div = document.querySelector('#user_info');
 
       projectConfig = document.querySelector('#pconfig');
 
       loadingImage = document.querySelector('#loading');
 
-      console.log(signin_button, revoke_button, user_info_div);
-      //showButton(signin_button);
+      console.log(signin_button, user_info_div);
       getUserInfo(false);
     }
   };
 })();
 
-window.onload=gh.onload;
+window.onload = gh.onload;

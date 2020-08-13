@@ -2,14 +2,14 @@
 <html>
 
 <head>
-  <style>
-  </style>
 </head>
 
 <body>
   <div id="pconfig" style="display:none">
     <label for="pname">New project name:</label>
-    <input type="text" id="pname" name="pname">
+    <input type="text" id="pname" name="pname" value="my-new-project" required>
+    <br><br>
+
     <label for="ptype_picker">Type:</label>
     <select name="ptype_picker" id="ptype_picker">
       <option value="java">Java</option>
@@ -17,19 +17,24 @@
       <option value="springboot-maven">SpringBoot Maven</option>
     </select>
     <br><br>
-    <button id="cproject">Create</button><br><br>
+
+    <label for="isprivate">Private project</label>
+    <input type="checkbox" id="isprivate" name="isprivate" checked>
+    <br><br>
+
+    <button id="cproject">Create</button>
+    <div id="loading_for_creation" style="display:none">
+      <img src="images/loading.gif" alt="Loading..." />
+    </div>
+    <p id="error_message" style="color:red;"></p>
   </div>
   <div id="loading">
-    <img id="loading-image" src="images/loading.gif" alt="Loading..." />
+    <p>Signing in to GitHub...</p>
+    <img src="images/loading.gif" alt="Loading..." />
   </div>
   <div id="user_info"></div>
-  <button id="signin" style="display:none">Sign in</button>
-  <button id="revoke" style="display:none">Revoke token</button>
-  <!-- Do not show user repos
-  <br><b>Your repos:</b><br>
-  <textarea id="user_repos" style="width: 95%; min-height: 200px"></textarea>
-  -->
-  <script src="popup.js"></script>
+  <button id="signin" style="display:none">Sign in to GitHub</button>
+  <script src="popup.bundle.js"></script>
 </body>
 
 </html>
