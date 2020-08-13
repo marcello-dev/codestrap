@@ -6,9 +6,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 module.exports = {
   entry: {
       popup: './src/popup.js',
-      options: './src/options.js',
-      background: './src/background.js',
-      contentscript: './src/contentscript.js'
+      background: './src/background.js'
     },
   output: {
     filename: '[name].bundle.js',
@@ -16,12 +14,11 @@ module.exports = {
   },
   
   plugins: [
-    new CopyPlugin({ // Move resources to dist folder
+    new CopyPlugin({ // Move resources to dist folder without packing
       patterns: [
         { from: 'src/popup.html' },
-        { from: 'src/options.html' },
         { from: 'src/manifest.json' },
-        { from: 'images', to: 'images',toType: 'dir',}
+        { from: 'images', to: 'images', toType: 'dir'}
       ],
     }),
   ],
