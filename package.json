@@ -1,7 +1,7 @@
 {
   "name": "codestrap",
   "version": "0.0.2",
-  "description": "Extension to bootstrap a new project",
+  "description": "Extension to bootstrap a new development project.",
   "private": true,
   "directories": {
     "test": "test"
