@@ -72,8 +72,12 @@ var gh = (function () {
     // So keeping the clientSecrent in the source file is considered safe.
 
     //OAuth App of code-strap GitHub organization
-    var clientId = '82a79620cdd7c46c5db9';
-    var clientSecret = 'cc63459ed4ddff20866b1dea221d821fd08a839d';
+    //var clientId = '82a79620cdd7c46c5db9';
+    //var clientSecret = 'cc63459ed4ddff20866b1dea221d821fd08a839d';
+
+    //OAuth App of code-strap DEV GitHub organization
+    var clientId = 'c71ee23c883ee011278f';
+    var clientSecret = '5a96e1fba59ddf2e92f4d2ae82b3d797dad828ab';
 
     var redirectUri = chrome.identity.getRedirectURL('provider_cb');
 
@@ -89,34 +93,44 @@ var gh = (function () {
           callback(null, access_token);
           return;
         }
-        console.log("Not found cached token, proceding with interactive authorization");
-        var options = {
-          'interactive': interactive,
-          'url': 'https://github.com/login/oauth/authorize' +
-            '?client_id=' + clientId +
-            // Request read/write privileges on public and private repos
-            '&scope=repo' +
-            '&redirect_uri=' + encodeURIComponent(redirectUri)
-        }
-
-        chrome.identity.launchWebAuthFlow(options, function (redirectUri) {
-          console.log('launchWebAuthFlow completed', chrome.runtime.lastError,
-            redirectUri);
-          if (chrome.runtime.lastError) {
-            callback(new Error(chrome.runtime.lastError));
-            return;
+        // Check if the access_token is in the storage (after the browser is closed and reopened)
+        chrome.storage.local.get(['access_token'], function (result) {
+          // If token is in the storage then return it.
+          if(result.access_token){
+            console.log('The access_token in storage', result.access_token);
+            access_token = result.access_token;
+            callback(null, access_token);
+            return;  
           }
-
-          // Upon success the response is appended to redirectUri, e.g.
-          // https://{app_id}.chromiumapp.org/provider_cb#access_token={value}
-          //     &refresh_token={value}
-          // or:
-          // https://{app_id}.chromiumapp.org/provider_cb#code={value}
-          var matches = redirectUri.match(redirectRe);
-          if (matches && matches.length > 1)
-            handleProviderResponse(parseRedirectFragment(matches[1]));
-          else
-            callback(new Error('Invalid redirect URI'));
+          console.log("Not found cached token, proceding with interactive authorization");
+          var options = {
+            'interactive': interactive,
+            'url': 'https://github.com/login/oauth/authorize' +
+              '?client_id=' + clientId +
+              // Request read/write privileges on public and private repos
+              '&scope=repo' +
+              '&redirect_uri=' + encodeURIComponent(redirectUri)
+          }
+  
+          chrome.identity.launchWebAuthFlow(options, function (redirectUri) {
+            console.log('launchWebAuthFlow completed', chrome.runtime.lastError,
+              redirectUri);
+            if (chrome.runtime.lastError) {
+              callback(new Error(chrome.runtime.lastError));
+              return;
+            }
+  
+            // Upon success the response is appended to redirectUri, e.g.
+            // https://{app_id}.chromiumapp.org/provider_cb#access_token={value}
+            //     &refresh_token={value}
+            // or:
+            // https://{app_id}.chromiumapp.org/provider_cb#code={value}
+            var matches = redirectUri.match(redirectRe);
+            if (matches && matches.length > 1)
+              handleProviderResponse(parseRedirectFragment(matches[1]));
+            else
+              callback(new Error('Invalid redirect URI'));
+          });
         });
 
         function parseRedirectFragment(fragment) {
@@ -174,8 +188,8 @@ var gh = (function () {
 
         function setAccessToken(token) {
           access_token = token;
-          chrome.storage.sync.set({ access_token: token }, function () {
-            console.log("Saved access_token in storage");
+          chrome.storage.local.set({ access_token: token }, function () {
+            console.log("Saved access_token in storage:",token);
           });
           callback(null, access_token);
         }
@@ -185,10 +199,10 @@ var gh = (function () {
         if (access_token == token_to_remove) {
           access_token = null;
 
-          chrome.storage.sync.get(['access_token'], function (result) {
+          chrome.storage.local.get(['access_token'], function (result) {
             console.log('Cached token: ' + result);
             if (result !== null) {
-              chrome.storage.sync.set({ access_token: null }, function () {
+              chrome.storage.local.set({ access_token: null }, function () {
                 console.log("Removed cached token from storage");
               });
             }
@@ -208,8 +222,8 @@ var gh = (function () {
 
     function getToken() {
       tokenFetcher.getToken(interactive, function (error, token) {
-        console.log('token fetch: ', error);
         if (error) {
+          console.log('token fetch error: ', error);
           callback(error);
           return;
         }
@@ -357,6 +371,7 @@ var gh = (function () {
       loadingImage = document.querySelector('#loading');
 
       console.log(signin_button, user_info_div);
+
       getUserInfo(false);
     }
   };
