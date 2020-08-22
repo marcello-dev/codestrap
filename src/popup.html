@@ -2,6 +2,7 @@
 <html>
 
 <head>
+  <link rel="stylesheet" href="bundle.css">
 </head>
 
 <body>
@@ -22,7 +23,12 @@
     <input type="checkbox" id="isprivate" name="isprivate" checked>
     <br><br>
 
-    <button id="cproject">Create</button>
+    <!--<button id="cproject">Create</button>-->
+    <button id="cproject" class="foo-button mdc-button">
+      <div class="mdc-button__ripple"></div>
+      <span class="mdc-button__label">Create</span>
+    </button>
+
     <div id="loading_for_creation" style="display:none">
       <img src="images/loading.gif" alt="Loading..." />
     </div>
