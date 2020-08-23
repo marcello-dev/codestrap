@@ -25,7 +25,7 @@ var octokit = null;
 
 function createNewProject(pconfig) {
   console.log('Project config: ', pconfig);
-  chrome.storage.sync.get(['access_token'], function (result) {
+  chrome.storage.local.get(['access_token'], function (result) {
 
     if(octokit === null || currentToken !== result.access_token){
       console.log('Instantiating Octokit or changing token');

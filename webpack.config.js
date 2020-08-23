@@ -59,6 +59,14 @@ module.exports = {
             }
           },
         ]
+      },
+      {
+        // Load only for popup.js
+        test: /popup\.js$/,
+        loader: 'babel-loader',
+        query: {
+          presets: ['@babel/preset-env'],
+        },
       }
     ]
   },

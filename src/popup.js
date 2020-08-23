@@ -1,9 +1,22 @@
 // Copyright 2020 Marcello Monachesi
+import {MDCRipple} from '@material/ripple/index';
+import {MDCSelect} from '@material/select';
+
 
 'use strict';
 
 let createProject = document.getElementById('cproject');
 var errorMessage = document.getElementById('error_message');
+
+const ripple = new MDCRipple(document.querySelector('.foo-button'));
+const select = new MDCSelect(document.querySelector('.mdc-select'));
+
+var projectType = 'java';
+select.listen('MDCSelect:change', () => {
+  console.log(`Selected option at index ${select.selectedIndex} with value "${select.value}"`);
+  projectType = select.value;
+});
+
 
 createProject.onclick = function () {
   errorMessage.innerHTML = '';
@@ -13,13 +26,15 @@ createProject.onclick = function () {
     errorMessage.innerHTML = 'Please provide the project name';
     return false;
   }
-
   var projectName = pnameElement.value;
   console.log('Project name: ', projectName);
 
   // Get Project type
-  var ptypePicker = document.getElementById("ptype_picker");
-  var projectType = ptypePicker.options[ptypePicker.selectedIndex].value;
+  //var ptypePicker = document.getElementById("ptype_picker");
+  //var ptypePicker = document.querySelector('.mdc-select');
+  
+  //var projectType = ptypePicker.value;
+  console.log('Project type: ', projectType);
 
   var isPrivate = document.getElementById("isprivate").checked;
 
