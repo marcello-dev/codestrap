@@ -1,6 +1,8 @@
 // Copyright 2020 Marcello Monachesi
 import {MDCRipple} from '@material/ripple/index';
 import {MDCSelect} from '@material/select';
+import {MDCTextField} from '@material/textfield';
+
 
 
 'use strict';
@@ -10,30 +12,30 @@ var errorMessage = document.getElementById('error_message');
 
 const ripple = new MDCRipple(document.querySelector('.foo-button'));
 const select = new MDCSelect(document.querySelector('.mdc-select'));
+const pnameElement = new MDCTextField(document.querySelector('.mdc-text-field'));
 
-var projectType = 'java';
-select.listen('MDCSelect:change', () => {
-  console.log(`Selected option at index ${select.selectedIndex} with value "${select.value}"`);
-  projectType = select.value;
-});
+//var projectType = 'java';
+//select.listen('MDCSelect:change', () => {
+//  console.log(`Selected option at index ${select.selectedIndex} with value "${select.value}"`);
+//  projectType = select.value;
+//});
 
 
 createProject.onclick = function () {
   errorMessage.innerHTML = '';
   // Validate project name
-  var pnameElement = document.getElementById('pname');
-  if (!pnameElement.checkValidity()) {
-    errorMessage.innerHTML = 'Please provide the project name';
-    return false;
-  }
+  //if (!pnameElement.checkValidity()) {
+  //  errorMessage.innerHTML = 'Please provide the project name';
+  //  return false;
+ // }
   var projectName = pnameElement.value;
   console.log('Project name: ', projectName);
 
   // Get Project type
   //var ptypePicker = document.getElementById("ptype_picker");
-  //var ptypePicker = document.querySelector('.mdc-select');
-  
-  //var projectType = ptypePicker.value;
+  const ptypePicker = new MDCSelect(document.querySelector('.mdc-select'));
+  console.log('ptypepicker: ', ptypePicker);
+  var projectType = ptypePicker.value;
   console.log('Project type: ', projectType);
 
   var isPrivate = document.getElementById("isprivate").checked;

@@ -34,6 +34,7 @@
     "@material/menu": "^7.0.0",
     "@material/ripple": "^7.0.0",
     "@material/select": "^7.0.0",
+    "@material/textfield": "^7.0.0",
     "@octokit/rest": "^18.0.3"
   }
 }
