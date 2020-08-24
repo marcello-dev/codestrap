@@ -2,6 +2,7 @@
 <html>
 
 <head>
+  <link rel="stylesheet" href="bundle.css">
 </head>
 
 <body>
@@ -10,19 +11,85 @@
     <input type="text" id="pname" name="pname" value="my-new-project" required>
     <br><br>
 
+    <!--
     <label for="ptype_picker">Type:</label>
     <select name="ptype_picker" id="ptype_picker">
       <option value="java">Java</option>
       <option value="java-maven">Java Maven</option>
       <option value="springboot-maven">SpringBoot Maven</option>
     </select>
+  -->
+  <!--
+    <div  id="ptype_picker" class="mdc-menu mdc-menu-surface">
+      <ul class="mdc-list" role="menu" aria-hidden="true" aria-orientation="vertical" tabindex="-1">
+        <li class="mdc-list-item" role="menuitem">
+          <span class="mdc-list-item__ripple"></span>
+          <span class="mdc-list-item__text">Java</span>
+        </li>
+        <li class="mdc-list-item" role="menuitem">
+          <span class="mdc-list-item__ripple"></span>
+          <span class="mdc-list-item__text">Java Maven</span>
+        </li>
+      </ul>
+    </div>
+  -->
+
+    <div class="mdc-select mdc-select--filled demo-width-class">
+      <div class="mdc-select__anchor">
+        <span class="mdc-select__ripple"></span>
+        <span class="mdc-select__selected-text"></span>
+        <span class="mdc-select__dropdown-icon">
+          <svg
+              class="mdc-select__dropdown-icon-graphic"
+              viewBox="7 10 10 5">
+            <polygon
+                class="mdc-select__dropdown-icon-inactive"
+                stroke="none"
+                fill-rule="evenodd"
+                points="7 10 12 15 17 10">
+            </polygon>
+            <polygon
+                class="mdc-select__dropdown-icon-active"
+                stroke="none"
+                fill-rule="evenodd"
+                points="7 15 12 10 17 15">
+            </polygon>
+          </svg>
+        </span>
+        <span class="mdc-floating-label">Project type</span>
+        <span class="mdc-line-ripple"></span>
+      </div>
+    
+      <div class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth">
+        <ul class="mdc-list">
+          <li class="mdc-list-item mdc-list-item--selected" data-value="java" aria-selected="true">
+            <span class="mdc-list-item__ripple"></span>
+            <span class="mdc-list-item__text">Java</span>
+          </li>
+          <li class="mdc-list-item" data-value="java-maven">
+            <span class="mdc-list-item__ripple"></span>
+            <span class="mdc-list-item__text">Java Maven</span>
+          </li>
+          <li class="mdc-list-item" data-value="springboot-maven">
+            <span class="mdc-list-item__ripple"></span>
+            <span class="mdc-list-item__text">SpringBoot Maven</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
     <br><br>
 
     <label for="isprivate">Private project</label>
     <input type="checkbox" id="isprivate" name="isprivate" checked>
     <br><br>
 
-    <button id="cproject">Create</button>
+    <!--<button id="cproject">Create</button>-->
+    <button id="cproject" class="foo-button mdc-button">
+      <div class="mdc-button__ripple"></div>
+      <span class="mdc-button__label">Create</span>
+    </button>
+
     <div id="loading_for_creation" style="display:none">
       <img src="images/loading.gif" alt="Loading..." />
     </div>
@@ -34,7 +101,8 @@
   </div>
   <div id="user_info"></div>
   <button id="signin" style="display:none">Sign in to GitHub</button>
-  <script src="popup.bundle.js"></script>
+
+  <script src="popup.bundle.js" async></script>
 </body>
 
 </html>
