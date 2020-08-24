@@ -2,8 +2,8 @@
 import {MDCRipple} from '@material/ripple/index';
 import {MDCSelect} from '@material/select';
 import {MDCTextField} from '@material/textfield';
-
-
+import {MDCSwitch} from '@material/switch';
+import {MDCFormField} from '@material/form-field';
 
 'use strict';
 
@@ -13,6 +13,9 @@ var errorMessage = document.getElementById('error_message');
 const ripple = new MDCRipple(document.querySelector('.foo-button'));
 const select = new MDCSelect(document.querySelector('.mdc-select'));
 const pnameElement = new MDCTextField(document.querySelector('.mdc-text-field'));
+const isPrivateSwitch = new MDCSwitch(document.querySelector('.mdc-switch'));
+//const formField = new MDCFormField(document.querySelector('.mdc-form-field'));
+//formField.input = isPrivateSwitch;
 
 //var projectType = 'java';
 //select.listen('MDCSelect:change', () => {
@@ -38,7 +41,7 @@ createProject.onclick = function () {
   var projectType = ptypePicker.value;
   console.log('Project type: ', projectType);
 
-  var isPrivate = document.getElementById("isprivate").checked;
+  var isPrivate = isPrivateSwitch.checked;
 
   // Send message to background script
   chrome.runtime.sendMessage({

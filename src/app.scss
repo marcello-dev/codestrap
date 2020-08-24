@@ -8,12 +8,23 @@
 @use "@material/line-ripple/mdc-line-ripple";
 @use "@material/notched-outline/mdc-notched-outline";
 @use "@material/textfield";
+@use "@material/switch";
 
+@include switch.core-styles;
 @include textfield.core-styles;
 
-.demo-width-class {
-  width: 400px;
+html, body {
+  color: #333;
+  font-size: 16px;
+  line-height: 20px;
 }
+body {
+  margin: 20px;
+}
+
+//.demo-width-class {
+//  width: 300px;
+//}
 
 .foo-button {
   @include button.container-fill-color(darksalmon);
