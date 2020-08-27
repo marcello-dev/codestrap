@@ -15,6 +15,8 @@ const signintRipple = new MDCRipple(document.getElementById('signin'));
 const pLanguageElement = new MDCSelect(document.getElementById('planguage'));
 const buildtoolElement = new MDCSelect(document.getElementById('buildtool'));
 const frameworkElement = new MDCSelect(document.getElementById('framework'));
+const buildtooljsElement = new MDCSelect(document.getElementById('buildtool-js'));
+const frameworkjsElement = new MDCSelect(document.getElementById('framework-js'));
 const isPrivateSwitch = new MDCSwitch(document.querySelector('.mdc-switch'));
 const pnameElement = new MDCTextField(document.querySelector('.mdc-text-field'));
 
@@ -35,16 +37,35 @@ buildtoolElement.listen('MDCSelect:change', () => {
   }
 });
 
+frameworkjsElement.listen('MDCSelect:change', () => {
+  if (frameworkjsElement.selectedIndex !== buildtooljsElement.selectedIndex) {
+    buildtooljsElement.selectedIndex = frameworkjsElement.selectedIndex;
+  }
+});
+
+buildtooljsElement.listen('MDCSelect:change', () => {
+  if (frameworkjsElement.selectedIndex !== buildtooljsElement.selectedIndex) {
+    frameworkjsElement.selectedIndex = buildtooljsElement.selectedIndex;
+  }
+});
+
 pLanguageElement.listen('MDCSelect:change', () => {
   console.log(`Selected language at index ${pLanguageElement.selectedIndex} with value "${pLanguageElement.value}"`);
   const javaConfig = document.getElementById('java-configurator');
   const pyConfig = document.getElementById('python-configurator');
+  const jsConfig = document.getElementById('javascript-configurator');
   if (pLanguageElement.value === 'java') {
     javaConfig.style.display = 'inline';
     pyConfig.style.display = 'none';
+    jsConfig.style.display = 'none';
   } else if (pLanguageElement.value === 'python') {
     javaConfig.style.display = 'none';
+    jsConfig.style.display = 'none';
     pyConfig.style.display = 'inline';
+  } else if(pLanguageElement.value === 'javascript'){
+    javaConfig.style.display = 'none';
+    jsConfig.style.display = 'inline';
+    pyConfig.style.display = 'node';
   }
 });
 
