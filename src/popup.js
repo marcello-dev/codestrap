@@ -10,7 +10,8 @@ import { MDCSwitch } from '@material/switch';
 let createProject = document.getElementById('cproject');
 var errorMessage = document.getElementById('error_message');
 
-const ripple = new MDCRipple(document.getElementById('cproject'));
+const cprojectRipple = new MDCRipple(document.getElementById('cproject'));
+const signintRipple = new MDCRipple(document.getElementById('signin'));
 const pLanguageElement = new MDCSelect(document.getElementById('planguage'));
 const buildtoolElement = new MDCSelect(document.getElementById('buildtool'));
 const frameworkElement = new MDCSelect(document.getElementById('framework'));

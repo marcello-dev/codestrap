@@ -31,10 +31,6 @@ body {
   float:right;
 }
 
-//.demo-width-class {
-//  width: 300px;
-//}
-
-//.foo-button {
-//  @include button.container-fill-color(rgb(15, 35, 44));
-//}
+.foo-button {
+  width: 100px; height: 80px; min-width: initial;
+}

@@ -9,7 +9,7 @@
   <div id="pconfig" style="display:none">
 
     <!-- PROJECT LANGUAGE -->
-    <div id="planguage" class="mdc-select mdc-select--filled demo-width-class">
+    <div id="planguage" class="mdc-select mdc-select--filled">
       <div class="mdc-select__anchor">
         <span class="mdc-select__ripple"></span>
         <span class="mdc-select__selected-text"></span>
@@ -159,7 +159,13 @@
   <div id="user_info"></div>
 
   <!-- SIGN IN BUTTON -->
-  <button id="signin" style="display:none">Sign in to GitHub</button>
+  <div class="mdc-touch-target-wrapper" >
+    <button id="signin" class="mdc-button mdc-button--outlined mdc-button--touch mdc-button--raised signin-button" style="display:none" >
+      <div class="mdc-button__ripple"></div>
+      <span class="mdc-button__label">Sign in to GitHub</span>
+      <div class="mdc-button__touch"></div>
+    </button>
+  </div>
 
   <script src="popup.bundle.js" async></script>
 </body>
