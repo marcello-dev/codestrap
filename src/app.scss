@@ -9,7 +9,12 @@
 @use "@material/notched-outline/mdc-notched-outline";
 @use "@material/textfield";
 @use "@material/switch";
+@use "@material/radio";
+@use "@material/form-field";
 
+@include radio.core-styles;
+// Only if radio button used with form
+@include form-field.core-styles;
 @include switch.core-styles;
 @include textfield.core-styles;
 
@@ -19,13 +24,13 @@ html, body {
   line-height: 20px;
 }
 body {
-  margin: 20px;
+  margin: 15px;
 }
 
 //.demo-width-class {
 //  width: 300px;
 //}
 
-.foo-button {
-  @include button.container-fill-color(darksalmon);
-}
+//.foo-button {
+//  @include button.container-fill-color(rgb(15, 35, 44));
+//}

@@ -1,51 +1,89 @@
 // Copyright 2020 Marcello Monachesi
-import {MDCRipple} from '@material/ripple/index';
-import {MDCSelect} from '@material/select';
-import {MDCTextField} from '@material/textfield';
-import {MDCSwitch} from '@material/switch';
-import {MDCFormField} from '@material/form-field';
+import { MDCRipple } from '@material/ripple/index';
+import { MDCSelect } from '@material/select';
+import { MDCTextField } from '@material/textfield';
+import { MDCSwitch } from '@material/switch';
+//import { MDCFormField } from '@material/form-field';
 
 'use strict';
 
 let createProject = document.getElementById('cproject');
 var errorMessage = document.getElementById('error_message');
 
-const ripple = new MDCRipple(document.querySelector('.foo-button'));
-const select = new MDCSelect(document.querySelector('.mdc-select'));
-const pnameElement = new MDCTextField(document.querySelector('.mdc-text-field'));
+const ripple = new MDCRipple(document.getElementById('cproject'));
+const pLanguageElement = new MDCSelect(document.getElementById('planguage'));
+const buildtoolElement = new MDCSelect(document.getElementById('buildtool'));
+const frameworkElement = new MDCSelect(document.getElementById('framework'));
 const isPrivateSwitch = new MDCSwitch(document.querySelector('.mdc-switch'));
+const pnameElement = new MDCTextField(document.querySelector('.mdc-text-field'));
+
 //const formField = new MDCFormField(document.querySelector('.mdc-form-field'));
 //formField.input = isPrivateSwitch;
 
-//var projectType = 'java';
-//select.listen('MDCSelect:change', () => {
-//  console.log(`Selected option at index ${select.selectedIndex} with value "${select.value}"`);
-//  projectType = select.value;
-//});
+frameworkElement.listen('MDCSelect:change', () => {
+  // Set build tool to Maven if a framework is selected
+  if (frameworkElement.value !== 'none' && buildtoolElement.value === 'none') {
+    buildtoolElement.selectedIndex = 1;
+  }
+});
+
+buildtoolElement.listen('MDCSelect:change', () => {
+  // Reset framework if a build tool is none
+  if (buildtoolElement.value === 'none' && frameworkElement.value !== 'none') {
+    frameworkElement.selectedIndex = 0;
+  }
+});
+
+pLanguageElement.listen('MDCSelect:change', () => {
+  console.log(`Selected language at index ${pLanguageElement.selectedIndex} with value "${pLanguageElement.value}"`);
+  const javaConfig = document.getElementById('java-configurator');
+  const pyConfig = document.getElementById('python-configurator');
+  if (pLanguageElement.value === 'java') {
+    javaConfig.style.display = 'inline';
+    pyConfig.style.display = 'none';
+  } else if (pLanguageElement.value === 'python') {
+    javaConfig.style.display = 'none';
+    pyConfig.style.display = 'inline';
+  }
+});
 
 
 createProject.onclick = function () {
   errorMessage.innerHTML = '';
   // Validate project name
-  //if (!pnameElement.checkValidity()) {
-  //  errorMessage.innerHTML = 'Please provide the project name';
-  //  return false;
- // }
+  if (!pnameElement.valid) {
+    errorMessage.innerHTML = 'Please provide the project name';
+    return false;
+  }
   var projectName = pnameElement.value;
   console.log('Project name: ', projectName);
 
-  // Get Project type
-  //var ptypePicker = document.getElementById("ptype_picker");
-  const ptypePicker = new MDCSelect(document.querySelector('.mdc-select'));
-  console.log('ptypepicker: ', ptypePicker);
-  var projectType = ptypePicker.value;
-  console.log('Project type: ', projectType);
+  // Get language
+  const language = pLanguageElement.value;
+  console.log('Language selected: ', language);
+  // Get Build Tool
+  const buildtool = buildtoolElement.value;
+  console.log('Build tool selected: ', buildtool);
+  // Get Framework
+  const framework = frameworkElement.value;
+  console.log('Framework selected: ', framework);
+
+
+  // build project type
+  var ptype = language;
+  if (buildtool !== 'none') {
+    ptype = ptype + '-' + buildtool;
+  }
+  if (framework !== 'none') {
+    ptype = ptype + '-' + framework;
+  }
+  console.log('Project type: ', ptype);
 
   var isPrivate = isPrivateSwitch.checked;
 
   // Send message to background script
   chrome.runtime.sendMessage({
-    directive: "create-project", pname: projectName, ptype: projectType, isPrivate: isPrivate
+    directive: "create-project", pname: projectName, ptype: ptype, isPrivate: isPrivate
   });
 
   var loadingImage = document.querySelector('#loading_for_creation');
@@ -116,11 +154,11 @@ var gh = (function () {
         // Check if the access_token is in the storage (after the browser is closed and reopened)
         chrome.storage.local.get(['access_token'], function (result) {
           // If token is in the storage then return it.
-          if(result.access_token){
+          if (result.access_token) {
             console.log('The access_token in storage', result.access_token);
             access_token = result.access_token;
             callback(null, access_token);
-            return;  
+            return;
           }
           console.log("Not found cached token, proceding with interactive authorization");
           var options = {
@@ -131,7 +169,7 @@ var gh = (function () {
               '&scope=repo' +
               '&redirect_uri=' + encodeURIComponent(redirectUri)
           }
-  
+
           chrome.identity.launchWebAuthFlow(options, function (redirectUri) {
             console.log('launchWebAuthFlow completed', chrome.runtime.lastError,
               redirectUri);
@@ -139,7 +177,7 @@ var gh = (function () {
               callback(new Error(chrome.runtime.lastError));
               return;
             }
-  
+
             // Upon success the response is appended to redirectUri, e.g.
             // https://{app_id}.chromiumapp.org/provider_cb#access_token={value}
             //     &refresh_token={value}
@@ -209,7 +247,7 @@ var gh = (function () {
         function setAccessToken(token) {
           access_token = token;
           chrome.storage.local.set({ access_token: token }, function () {
-            console.log("Saved access_token in storage:",token);
+            console.log("Saved access_token in storage:", token);
           });
           callback(null, access_token);
         }
@@ -325,7 +363,7 @@ var gh = (function () {
     var elem = user_info_div;
     var nameElem = document.createElement('div');
     nameElem.innerHTML = "<b>Hello " + user_info.name + "</b><br>"
-      + "Your github page is: " + user_info.html_url;
+      + "Your GitHub page is: " + user_info.html_url;
     elem.appendChild(nameElem);
   }
 
