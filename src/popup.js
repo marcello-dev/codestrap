@@ -29,7 +29,7 @@ frameworkElement.listen('MDCSelect:change', () => {
 });
 
 buildtoolElement.listen('MDCSelect:change', () => {
-  // Reset framework if a build tool is none
+  // Reset framework if build tool is none
   if (buildtoolElement.value === 'none' && frameworkElement.value !== 'none') {
     frameworkElement.selectedIndex = 0;
   }
