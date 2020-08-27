@@ -1,31 +1,89 @@
 // Copyright 2020 Marcello Monachesi
+import { MDCRipple } from '@material/ripple/index';
+import { MDCSelect } from '@material/select';
+import { MDCTextField } from '@material/textfield';
+import { MDCSwitch } from '@material/switch';
+//import { MDCFormField } from '@material/form-field';
 
 'use strict';
 
 let createProject = document.getElementById('cproject');
 var errorMessage = document.getElementById('error_message');
 
+const ripple = new MDCRipple(document.getElementById('cproject'));
+const pLanguageElement = new MDCSelect(document.getElementById('planguage'));
+const buildtoolElement = new MDCSelect(document.getElementById('buildtool'));
+const frameworkElement = new MDCSelect(document.getElementById('framework'));
+const isPrivateSwitch = new MDCSwitch(document.querySelector('.mdc-switch'));
+const pnameElement = new MDCTextField(document.querySelector('.mdc-text-field'));
+
+//const formField = new MDCFormField(document.querySelector('.mdc-form-field'));
+//formField.input = isPrivateSwitch;
+
+frameworkElement.listen('MDCSelect:change', () => {
+  // Set build tool to Maven if a framework is selected
+  if (frameworkElement.value !== 'none' && buildtoolElement.value === 'none') {
+    buildtoolElement.selectedIndex = 1;
+  }
+});
+
+buildtoolElement.listen('MDCSelect:change', () => {
+  // Reset framework if a build tool is none
+  if (buildtoolElement.value === 'none' && frameworkElement.value !== 'none') {
+    frameworkElement.selectedIndex = 0;
+  }
+});
+
+pLanguageElement.listen('MDCSelect:change', () => {
+  console.log(`Selected language at index ${pLanguageElement.selectedIndex} with value "${pLanguageElement.value}"`);
+  const javaConfig = document.getElementById('java-configurator');
+  const pyConfig = document.getElementById('python-configurator');
+  if (pLanguageElement.value === 'java') {
+    javaConfig.style.display = 'inline';
+    pyConfig.style.display = 'none';
+  } else if (pLanguageElement.value === 'python') {
+    javaConfig.style.display = 'none';
+    pyConfig.style.display = 'inline';
+  }
+});
+
+
 createProject.onclick = function () {
   errorMessage.innerHTML = '';
   // Validate project name
-  var pnameElement = document.getElementById('pname');
-  if (!pnameElement.checkValidity()) {
+  if (!pnameElement.valid) {
     errorMessage.innerHTML = 'Please provide the project name';
     return false;
   }
-
   var projectName = pnameElement.value;
   console.log('Project name: ', projectName);
 
-  // Get Project type
-  var ptypePicker = document.getElementById("ptype_picker");
-  var projectType = ptypePicker.options[ptypePicker.selectedIndex].value;
+  // Get language
+  const language = pLanguageElement.value;
+  console.log('Language selected: ', language);
+  // Get Build Tool
+  const buildtool = buildtoolElement.value;
+  console.log('Build tool selected: ', buildtool);
+  // Get Framework
+  const framework = frameworkElement.value;
+  console.log('Framework selected: ', framework);
 
-  var isPrivate = document.getElementById("isprivate").checked;
+
+  // build project type
+  var ptype = language;
+  if (buildtool !== 'none') {
+    ptype = ptype + '-' + buildtool;
+  }
+  if (framework !== 'none') {
+    ptype = ptype + '-' + framework;
+  }
+  console.log('Project type: ', ptype);
+
+  var isPrivate = isPrivateSwitch.checked;
 
   // Send message to background script
   chrome.runtime.sendMessage({
-    directive: "create-project", pname: projectName, ptype: projectType, isPrivate: isPrivate
+    directive: "create-project", pname: projectName, ptype: ptype, isPrivate: isPrivate
   });
 
   var loadingImage = document.querySelector('#loading_for_creation');
@@ -75,6 +133,10 @@ var gh = (function () {
     var clientId = '82a79620cdd7c46c5db9';
     var clientSecret = 'cc63459ed4ddff20866b1dea221d821fd08a839d';
 
+    //OAuth App of code-strap DEV GitHub organization
+    //var clientId = 'c71ee23c883ee011278f';
+    //var clientSecret = '5a96e1fba59ddf2e92f4d2ae82b3d797dad828ab';
+
     var redirectUri = chrome.identity.getRedirectURL('provider_cb');
 
     var redirectRe = new RegExp(redirectUri + '[#\?](.*)');
@@ -89,34 +151,44 @@ var gh = (function () {
           callback(null, access_token);
           return;
         }
-        console.log("Not found cached token, proceding with interactive authorization");
-        var options = {
-          'interactive': interactive,
-          'url': 'https://github.com/login/oauth/authorize' +
-            '?client_id=' + clientId +
-            // Request read/write privileges on public and private repos
-            '&scope=repo' +
-            '&redirect_uri=' + encodeURIComponent(redirectUri)
-        }
-
-        chrome.identity.launchWebAuthFlow(options, function (redirectUri) {
-          console.log('launchWebAuthFlow completed', chrome.runtime.lastError,
-            redirectUri);
-          if (chrome.runtime.lastError) {
-            callback(new Error(chrome.runtime.lastError));
+        // Check if the access_token is in the storage (after the browser is closed and reopened)
+        chrome.storage.local.get(['access_token'], function (result) {
+          // If token is in the storage then return it.
+          if (result.access_token) {
+            console.log('The access_token in storage', result.access_token);
+            access_token = result.access_token;
+            callback(null, access_token);
             return;
           }
+          console.log("Not found cached token, proceding with interactive authorization");
+          var options = {
+            'interactive': interactive,
+            'url': 'https://github.com/login/oauth/authorize' +
+              '?client_id=' + clientId +
+              // Request read/write privileges on public and private repos
+              '&scope=repo' +
+              '&redirect_uri=' + encodeURIComponent(redirectUri)
+          }
 
-          // Upon success the response is appended to redirectUri, e.g.
-          // https://{app_id}.chromiumapp.org/provider_cb#access_token={value}
-          //     &refresh_token={value}
-          // or:
-          // https://{app_id}.chromiumapp.org/provider_cb#code={value}
-          var matches = redirectUri.match(redirectRe);
-          if (matches && matches.length > 1)
-            handleProviderResponse(parseRedirectFragment(matches[1]));
-          else
-            callback(new Error('Invalid redirect URI'));
+          chrome.identity.launchWebAuthFlow(options, function (redirectUri) {
+            console.log('launchWebAuthFlow completed', chrome.runtime.lastError,
+              redirectUri);
+            if (chrome.runtime.lastError) {
+              callback(new Error(chrome.runtime.lastError));
+              return;
+            }
+
+            // Upon success the response is appended to redirectUri, e.g.
+            // https://{app_id}.chromiumapp.org/provider_cb#access_token={value}
+            //     &refresh_token={value}
+            // or:
+            // https://{app_id}.chromiumapp.org/provider_cb#code={value}
+            var matches = redirectUri.match(redirectRe);
+            if (matches && matches.length > 1)
+              handleProviderResponse(parseRedirectFragment(matches[1]));
+            else
+              callback(new Error('Invalid redirect URI'));
+          });
         });
 
         function parseRedirectFragment(fragment) {
@@ -174,8 +246,8 @@ var gh = (function () {
 
         function setAccessToken(token) {
           access_token = token;
-          chrome.storage.sync.set({ access_token: token }, function () {
-            console.log("Saved access_token in storage");
+          chrome.storage.local.set({ access_token: token }, function () {
+            console.log("Saved access_token in storage:", token);
           });
           callback(null, access_token);
         }
@@ -185,10 +257,10 @@ var gh = (function () {
         if (access_token == token_to_remove) {
           access_token = null;
 
-          chrome.storage.sync.get(['access_token'], function (result) {
+          chrome.storage.local.get(['access_token'], function (result) {
             console.log('Cached token: ' + result);
             if (result !== null) {
-              chrome.storage.sync.set({ access_token: null }, function () {
+              chrome.storage.local.set({ access_token: null }, function () {
                 console.log("Removed cached token from storage");
               });
             }
@@ -208,8 +280,8 @@ var gh = (function () {
 
     function getToken() {
       tokenFetcher.getToken(interactive, function (error, token) {
-        console.log('token fetch: ', error);
         if (error) {
+          console.log('token fetch error: ', error);
           callback(error);
           return;
         }
@@ -291,7 +363,7 @@ var gh = (function () {
     var elem = user_info_div;
     var nameElem = document.createElement('div');
     nameElem.innerHTML = "<b>Hello " + user_info.name + "</b><br>"
-      + "Your github page is: " + user_info.html_url;
+      + "Your GitHub page is: " + user_info.html_url;
     elem.appendChild(nameElem);
   }
 
@@ -357,6 +429,7 @@ var gh = (function () {
       loadingImage = document.querySelector('#loading');
 
       console.log(signin_button, user_info_div);
+
       getUserInfo(false);
     }
   };

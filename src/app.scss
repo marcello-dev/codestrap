@@ -1,0 +1,40 @@
+@use '@material/button/mdc-button';
+@use '@material/button';
+@use "@material/list/mdc-list";
+@use "@material/menu-surface/mdc-menu-surface";
+@use "@material/menu/mdc-menu";
+@use "@material/select/mdc-select";
+@use "@material/floating-label/mdc-floating-label";
+@use "@material/line-ripple/mdc-line-ripple";
+@use "@material/notched-outline/mdc-notched-outline";
+@use "@material/textfield";
+@use "@material/switch";
+@use "@material/radio";
+@use "@material/form-field";
+
+@include radio.core-styles;
+// Only if radio button used with form
+@include form-field.core-styles;
+@include switch.core-styles;
+@include textfield.core-styles;
+
+html, body {
+  color: #333;
+  font-size: 16px;
+  line-height: 20px;
+}
+body {
+  margin: 15px;
+}
+
+.mdc-switch{
+  float:right;
+}
+
+//.demo-width-class {
+//  width: 300px;
+//}
+
+//.foo-button {
+//  @include button.container-fill-color(rgb(15, 35, 44));
+//}
