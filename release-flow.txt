@@ -1,0 +1,6 @@
+1. launch git flow release
+2. in release branch bump versions: in package.json, in src/manifest.json
+3. finish release
+4. Go to tag
+5. build
+6. upload to google store
