@@ -1,6 +1,6 @@
 {
   "name": "codestrap",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Bootstrap a new development project.",
   "private": true,
   "directories": {
@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "build": "webpack"
   },
   "keywords": [],
   "author": "",
@@ -19,7 +20,7 @@
     "autoprefixer": "^9.8.6",
     "babel-loader": "^8.1.0",
     "copy-webpack-plugin": "^6.0.3",
-    "css-loader": "^4.2.1",
+    "css-loader": "^4.2.2",
     "extract-loader": "^5.1.0",
     "file-loader": "^6.0.0",
     "postcss-loader": "^3.0.0",
@@ -38,6 +39,6 @@
     "@material/select": "^7.0.0",
     "@material/switch": "^7.0.0",
     "@material/textfield": "^7.0.0",
-    "@octokit/rest": "^18.0.3"
+    "@octokit/rest": "^18.0.4"
   }
 }

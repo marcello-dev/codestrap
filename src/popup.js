@@ -10,10 +10,13 @@ import { MDCSwitch } from '@material/switch';
 let createProject = document.getElementById('cproject');
 var errorMessage = document.getElementById('error_message');
 
-const ripple = new MDCRipple(document.getElementById('cproject'));
+const cprojectRipple = new MDCRipple(document.getElementById('cproject'));
+const signintRipple = new MDCRipple(document.getElementById('signin'));
 const pLanguageElement = new MDCSelect(document.getElementById('planguage'));
 const buildtoolElement = new MDCSelect(document.getElementById('buildtool'));
 const frameworkElement = new MDCSelect(document.getElementById('framework'));
+const buildtooljsElement = new MDCSelect(document.getElementById('buildtool-js'));
+const frameworkjsElement = new MDCSelect(document.getElementById('framework-js'));
 const isPrivateSwitch = new MDCSwitch(document.querySelector('.mdc-switch'));
 const pnameElement = new MDCTextField(document.querySelector('.mdc-text-field'));
 
@@ -28,9 +31,21 @@ frameworkElement.listen('MDCSelect:change', () => {
 });
 
 buildtoolElement.listen('MDCSelect:change', () => {
-  // Reset framework if a build tool is none
+  // Reset framework if build tool is none
   if (buildtoolElement.value === 'none' && frameworkElement.value !== 'none') {
     frameworkElement.selectedIndex = 0;
+  }
+});
+
+frameworkjsElement.listen('MDCSelect:change', () => {
+  if (frameworkjsElement.selectedIndex !== buildtooljsElement.selectedIndex) {
+    buildtooljsElement.selectedIndex = frameworkjsElement.selectedIndex;
+  }
+});
+
+buildtooljsElement.listen('MDCSelect:change', () => {
+  if (frameworkjsElement.selectedIndex !== buildtooljsElement.selectedIndex) {
+    frameworkjsElement.selectedIndex = buildtooljsElement.selectedIndex;
   }
 });
 
@@ -38,12 +53,19 @@ pLanguageElement.listen('MDCSelect:change', () => {
   console.log(`Selected language at index ${pLanguageElement.selectedIndex} with value "${pLanguageElement.value}"`);
   const javaConfig = document.getElementById('java-configurator');
   const pyConfig = document.getElementById('python-configurator');
+  const jsConfig = document.getElementById('javascript-configurator');
   if (pLanguageElement.value === 'java') {
     javaConfig.style.display = 'inline';
     pyConfig.style.display = 'none';
+    jsConfig.style.display = 'none';
   } else if (pLanguageElement.value === 'python') {
     javaConfig.style.display = 'none';
+    jsConfig.style.display = 'none';
     pyConfig.style.display = 'inline';
+  } else if(pLanguageElement.value === 'javascript'){
+    javaConfig.style.display = 'none';
+    jsConfig.style.display = 'inline';
+    pyConfig.style.display = 'node';
   }
 });
 
@@ -129,13 +151,13 @@ var gh = (function () {
     // the approved redirect url and not the malicious party.
     // So keeping the clientSecrent in the source file is considered safe.
 
-    //OAuth App of code-strap GitHub organization
-    var clientId = '82a79620cdd7c46c5db9';
-    var clientSecret = 'cc63459ed4ddff20866b1dea221d821fd08a839d';
+    // OAuth App of code-strap GitHub organization
+    // var clientId = '82a79620cdd7c46c5db9';
+    // var clientSecret = 'cc63459ed4ddff20866b1dea221d821fd08a839d';
 
-    //OAuth App of code-strap DEV GitHub organization
-    //var clientId = 'c71ee23c883ee011278f';
-    //var clientSecret = '5a96e1fba59ddf2e92f4d2ae82b3d797dad828ab';
+    // OAuth App of code-strap DEV GitHub organization
+    // var clientId = 'c71ee23c883ee011278f';
+    // var clientSecret = '5a96e1fba59ddf2e92f4d2ae82b3d797dad828ab';
 
     var redirectUri = chrome.identity.getRedirectURL('provider_cb');
 

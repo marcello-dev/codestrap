@@ -9,7 +9,7 @@
   <div id="pconfig" style="display:none">
 
     <!-- PROJECT LANGUAGE -->
-    <div id="planguage" class="mdc-select mdc-select--filled demo-width-class">
+    <div id="planguage" class="mdc-select mdc-select--filled">
       <div class="mdc-select__anchor">
         <span class="mdc-select__ripple"></span>
         <span class="mdc-select__selected-text"></span>
@@ -35,6 +35,10 @@
           <li class="mdc-list-item" data-value="python">
             <span class="mdc-list-item__ripple"></span>
             <span class="mdc-list-item__text">Python</span>
+          </li>
+          <li class="mdc-list-item" data-value="javascript">
+            <span class="mdc-list-item__ripple"></span>
+            <span class="mdc-list-item__text">Javascript</span>
           </li>
         </ul>
       </div>
@@ -118,6 +122,75 @@
     <div id="python-configurator" style="display:none">
     </div>
 
+    <!-- JAVASCRIPT CONFIGURATOR -->
+    <div id="javascript-configurator" style="display:none">
+      <!-- BUILD TOOLS -->
+      <div id="buildtool-js" class="mdc-select mdc-select--filled demo-width-class">
+        <div class="mdc-select__anchor">
+          <span class="mdc-select__ripple"></span>
+          <span class="mdc-select__selected-text"></span>
+          <span class="mdc-select__dropdown-icon">
+            <svg class="mdc-select__dropdown-icon-graphic" viewBox="7 10 10 5">
+              <polygon class="mdc-select__dropdown-icon-inactive" stroke="none" fill-rule="evenodd"
+                points="7 10 12 15 17 10">
+              </polygon>
+              <polygon class="mdc-select__dropdown-icon-active" stroke="none" fill-rule="evenodd"
+                points="7 15 12 10 17 15">
+              </polygon>
+            </svg>
+          </span>
+          <span class="mdc-floating-label">Build tool</span>
+          <span class="mdc-line-ripple"></span>
+        </div>
+        <div class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth">
+          <ul class="mdc-list">
+            <li class="mdc-list-item mdc-list-item--selected" data-value="none" aria-selected="true">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__text">None</span>
+            </li>
+            <li class="mdc-list-item" data-value="npm">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__text">npm</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <br><br>
+
+      <!-- FRAMEWORK -->
+      <div id="framework-js" class="mdc-select mdc-select--filled demo-width-class">
+        <div class="mdc-select__anchor">
+          <span class="mdc-select__ripple"></span>
+          <span class="mdc-select__selected-text"></span>
+          <span class="mdc-select__dropdown-icon">
+            <svg class="mdc-select__dropdown-icon-graphic" viewBox="7 10 10 5">
+              <polygon class="mdc-select__dropdown-icon-inactive" stroke="none" fill-rule="evenodd"
+                points="7 10 12 15 17 10">
+              </polygon>
+              <polygon class="mdc-select__dropdown-icon-active" stroke="none" fill-rule="evenodd"
+                points="7 15 12 10 17 15">
+              </polygon>
+            </svg>
+          </span>
+          <span class="mdc-floating-label">Framework</span>
+          <span class="mdc-line-ripple"></span>
+        </div>
+        <div class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth">
+          <ul class="mdc-list">
+            <li class="mdc-list-item mdc-list-item--selected" data-value="none" aria-selected="true">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__text">None</span>
+            </li>
+            <li class="mdc-list-item" data-value="nodejs">
+              <span class="mdc-list-item__ripple"></span>
+              <span class="mdc-list-item__text">Node.js</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <br><br>
+    </div>
+
     <!-- PROJECT NAME -->
     <label class="mdc-text-field mdc-text-field--filled mdc-text-field--label-floating">
       <span class="mdc-text-field__ripple"></span>
@@ -130,12 +203,11 @@
     <!-- IS PRIVATE -->
     <!--<div class="mdc-form-field">-->
     <label for="basic-switch">Private project</label>
-    <div class="mdc-switch mdc-switch--checked">
+    <div class="mdc-switch mdc-switch--unselected" disabled>
       <div class="mdc-switch__track"></div>
       <div class="mdc-switch__thumb-underlay">
         <div class="mdc-switch__thumb"></div>
-        <input type="checkbox" id="basic-switch" class="mdc-switch__native-control" role="switch" aria-checked="true"
-          checked>
+        <input type="checkbox" id="basic-switch" class="mdc-switch__native-control" role="switch">
       </div>
     </div>
     <!--</div>-->
@@ -159,7 +231,13 @@
   <div id="user_info"></div>
 
   <!-- SIGN IN BUTTON -->
-  <button id="signin" style="display:none">Sign in to GitHub</button>
+  <div class="mdc-touch-target-wrapper" >
+    <button id="signin" class="mdc-button mdc-button--outlined mdc-button--touch mdc-button--raised signin-button" style="display:none" >
+      <div class="mdc-button__ripple"></div>
+      <span class="mdc-button__label">Sign in to GitHub</span>
+      <div class="mdc-button__touch"></div>
+    </button>
+  </div>
 
   <script src="popup.bundle.js" async></script>
 </body>
