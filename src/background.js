@@ -43,7 +43,9 @@ function createNewProject(pconfig) {
       console.log("Sent and received: ", data);
       console.log('New repo: ' + data.html_url);
       // redirect to: gitpod.io/#<repo-name>
-      window.open('https://gitpod.io/#' + data.html_url);
+      chrome.tabs.create({
+        url: 'https://gitpod.io/#' + data.html_url
+      });
     }).catch(response => {
       console.error('Got error: ', response);
       var errorMessage = '';
