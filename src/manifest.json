@@ -4,16 +4,16 @@
   "description": "Bootstrap a new development project.",
   "permissions": [
     "storage",
-    "https://*.github.com/",
-    "identity"
+    "identity",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://*.github.com/"
   ],
   "background": {
-    "scripts": [
-      "background.bundle.js"
-    ],
-    "persistent": false
+    "service_worker": "background.bundle.js"
   },
-  "browser_action": {
+  "action": {
     "default_title": "Code Strap",
     "default_popup": "popup.html",
     "default_icon": {
@@ -31,5 +31,5 @@
     "64": "images/64px.png",
     "128": "images/128px.png"
   },
-  "manifest_version": 2
+  "manifest_version": 3
 }
