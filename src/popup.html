@@ -239,46 +239,16 @@
     </button>
   </div>
 
-  <div id="home" style="display:none">
-    <div id="urepos" class="mdc-select mdc-select--filled">
-      <div class="mdc-select__anchor">
-        <span class="mdc-select__ripple"></span>
-        <span class="mdc-select__selected-text"></span>
-        <span class="mdc-select__dropdown-icon">
-          <svg class="mdc-select__dropdown-icon-graphic" viewBox="7 10 10 5">
-            <polygon class="mdc-select__dropdown-icon-inactive" stroke="none" fill-rule="evenodd"
-              points="7 10 12 15 17 10">
-            </polygon>
-            <polygon class="mdc-select__dropdown-icon-active" stroke="none" fill-rule="evenodd"
-              points="7 15 12 10 17 15">
-            </polygon>
-          </svg>
-        </span>
-        <span class="mdc-floating-label">Your repositories</span>
-        <span class="mdc-line-ripple"></span>
-      </div>
-      <div class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth">
-        <ul class="mdc-list">
-          <li class="mdc-list-item mdc-list-item--selected" data-value="java" aria-selected="true">
-            <span class="mdc-list-item__ripple"></span>
-            <span class="mdc-list-item__text">Java</span>
-          </li>
-          <li class="mdc-list-item" data-value="python">
-            <span class="mdc-list-item__ripple"></span>
-            <span class="mdc-list-item__text">Python</span>
-          </li>
-          <li class="mdc-list-item" data-value="javascript">
-            <span class="mdc-list-item__ripple"></span>
-            <span class="mdc-list-item__text">Javascript</span>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <button id="cproject" class="mdc-button mdc-button--outlined">
+  <!-- Home page -->
+  <div id="home_container">
+    <hr>
+    <button id="to_config_project" class="mdc-button mdc-button--outlined">
       <div class="mdc-button__ripple"></div>
-      <span class="mdc-button__label">Create</span>
+      <span id="link_button" class="mdc-button__label">New project</span>
     </button>
+    <hr>
+    <div id="home" style="display:none">
+    </div>
   </div>
 
   <script src="popup.bundle.js" async></script>

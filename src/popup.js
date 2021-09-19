@@ -8,9 +8,11 @@ import { MDCSwitch } from '@material/switch';
 'use strict';
 
 let createProject = document.getElementById('cproject');
+let toConfigProjectButton = document.getElementById('to_config_project');
 var errorMessage = document.getElementById('error_message');
 
 const cprojectRipple = new MDCRipple(document.getElementById('cproject'));
+const toConfigProjectRipple = new MDCRipple(document.getElementById('to_config_project'));
 const signintRipple = new MDCRipple(document.getElementById('signin'));
 const pLanguageElement = new MDCSelect(document.getElementById('planguage'));
 const buildtoolElement = new MDCSelect(document.getElementById('buildtool'));
@@ -68,6 +70,33 @@ pLanguageElement.listen('MDCSelect:change', () => {
     pyConfig.style.display = 'node';
   }
 });
+
+toConfigProjectButton.onclick = function () {
+  console.log("to config clicked!");
+  
+  var home = document.querySelector('#home');
+  var projectConfig = document.querySelector('#pconfig');
+  var linkButton = document.querySelector('#link_button');
+  var user_info_div = document.querySelector('#user_info');
+  if (home.style.display === 'none'){
+    // show home
+    home.style.display = 'inline';
+    home.disabled = false;
+    // hide project config
+    projectConfig.style.display = 'none';
+    linkButton.innerHTML = "New project";
+    user_info_div.style.display = "inline";
+    user_info_div.disabled = false;
+  } else {
+    // hide home
+    home.style.display = 'none';
+    // Show project configuration
+    projectConfig.style.display = 'inline';
+    projectConfig.disabled = false;
+    linkButton.innerHTML = "My repos";
+    user_info_div.style.display = "none";
+  }
+}
 
 
 createProject.onclick = function () {
@@ -358,6 +387,10 @@ var gh = (function () {
     home.disabled = false;
   }
 
+  function hideHome() {
+    home.style.display = 'none';
+  }
+
   function showButton(button) {
     button.style.display = 'inline';
     button.disabled = false;
@@ -383,7 +416,6 @@ var gh = (function () {
       hideButton(signin_button);
       fetchUserRepos(user_info.repos_url);
       showHome(user_info)
-      //showProjectConfig();
     } else {
       console.log('Fetch info failed', error, status);
       showButton(signin_button);
@@ -406,23 +438,25 @@ var gh = (function () {
   }
 
   function onUserReposFetched(error, status, response) {
-    var elem = document.querySelector('#user_repos');
+    var elem = document.querySelector('#home');
     elem.innerHTML = '';
+    elem.innerHTML += "<p><b>Your repos:</b></p>";
     if (!error && status == 200) {
       //console.log("Got the following user repos:", response);
       var user_repos = JSON.parse(response);
       user_repos.forEach(function (repo) {
+        var content = '<p><a href="https://gitpod.io/#'+repo.html_url+'" target="_blank">';
         if (repo.private) {
-          elem.innerHTML += "[private repo]";
+          content += "[private repo]";
         } else {
-          elem.innerHTML += repo.name;
+          content += repo.name;
         }
-        elem.innerHTML += '\n';
+        content += "</a></p>";
+        elem.innerHTML += content;
       });
     } else {
       console.log('infoFetch failed', error, status);
     }
-
   }
 
   // Handlers for the buttons's onclick events.
