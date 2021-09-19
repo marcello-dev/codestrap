@@ -182,12 +182,12 @@ var gh = (function () {
     // So keeping the clientSecrent in the source file is considered safe.
 
     // OAuth App of code-strap GitHub organization
-    var clientId = '82a79620cdd7c46c5db9';
-    var clientSecret = 'cc63459ed4ddff20866b1dea221d821fd08a839d';
+    // var clientId = '82a79620cdd7c46c5db9';
+    // var clientSecret = 'cc63459ed4ddff20866b1dea221d821fd08a839d';
 
     // OAuth App of code-strap DEV GitHub organization
-    // var clientId = 'c71ee23c883ee011278f';
-    // var clientSecret = '5a96e1fba59ddf2e92f4d2ae82b3d797dad828ab';
+    var clientId = 'c71ee23c883ee011278f';
+    var clientSecret = '5a96e1fba59ddf2e92f4d2ae82b3d797dad828ab';
 
     var redirectUri = chrome.identity.getRedirectURL('provider_cb');
 
