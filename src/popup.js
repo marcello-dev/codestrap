@@ -141,6 +141,7 @@ var gh = (function () {
   var signin_button;
   var user_info_div;
   var projectConfig;
+  var home;
   var loadingImage;
 
 
@@ -152,12 +153,12 @@ var gh = (function () {
     // So keeping the clientSecrent in the source file is considered safe.
 
     // OAuth App of code-strap GitHub organization
-    var clientId = '82a79620cdd7c46c5db9';
-    var clientSecret = 'cc63459ed4ddff20866b1dea221d821fd08a839d';
+    // var clientId = '82a79620cdd7c46c5db9';
+    // var clientSecret = 'cc63459ed4ddff20866b1dea221d821fd08a839d';
 
     // OAuth App of code-strap DEV GitHub organization
-    // var clientId = 'c71ee23c883ee011278f';
-    // var clientSecret = '5a96e1fba59ddf2e92f4d2ae82b3d797dad828ab';
+    var clientId = 'c71ee23c883ee011278f';
+    var clientSecret = '5a96e1fba59ddf2e92f4d2ae82b3d797dad828ab';
 
     var redirectUri = chrome.identity.getRedirectURL('provider_cb');
 
@@ -196,6 +197,7 @@ var gh = (function () {
             console.log('launchWebAuthFlow completed', chrome.runtime.lastError,
               redirectUri);
             if (chrome.runtime.lastError) {
+              console.log('runtime.lastError',chrome.runtime.lastError);
               callback(new Error(chrome.runtime.lastError));
               return;
             }
@@ -349,6 +351,13 @@ var gh = (function () {
     projectConfig.disabled = false;
   }
 
+  function showHome(user_info) {
+    console.log("User info:")
+    console.log(user_info);
+    home.style.display = 'inline';
+    home.disabled = false;
+  }
+
   function showButton(button) {
     button.style.display = 'inline';
     button.disabled = false;
@@ -372,11 +381,12 @@ var gh = (function () {
       var user_info = JSON.parse(response);
       populateUserInfo(user_info);
       hideButton(signin_button);
-      showProjectConfig();
+      fetchUserRepos(user_info.repos_url);
+      showHome(user_info)
+      //showProjectConfig();
     } else {
-      console.log('infoFetch failed', error, status);
+      console.log('Fetch info failed', error, status);
       showButton(signin_button);
-
     }
     hideLoadingImage(loadingImage);
   }
@@ -397,17 +407,17 @@ var gh = (function () {
 
   function onUserReposFetched(error, status, response) {
     var elem = document.querySelector('#user_repos');
-    elem.value = '';
+    elem.innerHTML = '';
     if (!error && status == 200) {
-      console.log("Got the following user repos:", response);
+      //console.log("Got the following user repos:", response);
       var user_repos = JSON.parse(response);
       user_repos.forEach(function (repo) {
         if (repo.private) {
-          elem.value += "[private repo]";
+          elem.innerHTML += "[private repo]";
         } else {
-          elem.value += repo.name;
+          elem.innerHTML += repo.name;
         }
-        elem.value += '\n';
+        elem.innerHTML += '\n';
       });
     } else {
       console.log('infoFetch failed', error, status);
@@ -447,6 +457,8 @@ var gh = (function () {
       user_info_div = document.querySelector('#user_info');
 
       projectConfig = document.querySelector('#pconfig');
+
+      home = document.querySelector('#home');
 
       loadingImage = document.querySelector('#loading');
 
