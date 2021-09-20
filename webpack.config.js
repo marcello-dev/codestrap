@@ -8,6 +8,7 @@ const autoprefixer = require('autoprefixer');
 module.exports = {
   entry: {
       popup: './src/popup.js',
+      project_configuration: './src/project_configuration.js',
       background: './src/background.js',
       entry: './src/app.scss'
     },
@@ -20,6 +21,7 @@ module.exports = {
     new CopyPlugin({ // Move resources to dist folder without packing
       patterns: [
         { from: 'src/popup.html' },
+        { from: 'src/project_configuration.html' },
         { from: 'src/manifest.json' },
         { from: 'images', to: 'images', toType: 'dir'}
       ],
@@ -61,8 +63,8 @@ module.exports = {
         ]
       },
       {
-        // Load only for popup.js
-        test: /popup\.js$/,
+        // Load only for project_configuration.js
+        test: /project_configuration\.js$/,
         loader: 'babel-loader',
         query: {
           presets: ['@babel/preset-env'],
