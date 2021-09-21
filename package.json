@@ -1,6 +1,6 @@
 {
   "name": "codestrap",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Bootstrap a new development project.",
   "private": true,
   "directories": {
