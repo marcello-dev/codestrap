@@ -1,159 +1,9 @@
 // Copyright 2020 Marcello Monachesi
-import { MDCRipple } from '@material/ripple/index';
-import { MDCSelect } from '@material/select';
-import { MDCTextField } from '@material/textfield';
-import { MDCSwitch } from '@material/switch';
-//import { MDCFormField } from '@material/form-field';
+import {MDCList} from '@material/list';
 
 'use strict';
 
-let createProject = document.getElementById('cproject');
-let toConfigProjectButton = document.getElementById('to_config_project');
-var errorMessage = document.getElementById('error_message');
-
-const cprojectRipple = new MDCRipple(document.getElementById('cproject'));
-const toConfigProjectRipple = new MDCRipple(document.getElementById('to_config_project'));
-const signintRipple = new MDCRipple(document.getElementById('signin'));
-const pLanguageElement = new MDCSelect(document.getElementById('planguage'));
-const buildtoolElement = new MDCSelect(document.getElementById('buildtool'));
-const frameworkElement = new MDCSelect(document.getElementById('framework'));
-const buildtooljsElement = new MDCSelect(document.getElementById('buildtool-js'));
-const frameworkjsElement = new MDCSelect(document.getElementById('framework-js'));
-const isPrivateSwitch = new MDCSwitch(document.querySelector('.mdc-switch'));
-const pnameElement = new MDCTextField(document.querySelector('.mdc-text-field'));
-
-//const formField = new MDCFormField(document.querySelector('.mdc-form-field'));
-//formField.input = isPrivateSwitch;
-
-frameworkElement.listen('MDCSelect:change', () => {
-  // Set build tool to Maven if a framework is selected
-  if (frameworkElement.value !== 'none' && buildtoolElement.value === 'none') {
-    buildtoolElement.selectedIndex = 1;
-  }
-});
-
-buildtoolElement.listen('MDCSelect:change', () => {
-  // Reset framework if build tool is none
-  if (buildtoolElement.value === 'none' && frameworkElement.value !== 'none') {
-    frameworkElement.selectedIndex = 0;
-  }
-});
-
-frameworkjsElement.listen('MDCSelect:change', () => {
-  if (frameworkjsElement.selectedIndex !== buildtooljsElement.selectedIndex) {
-    buildtooljsElement.selectedIndex = frameworkjsElement.selectedIndex;
-  }
-});
-
-buildtooljsElement.listen('MDCSelect:change', () => {
-  if (frameworkjsElement.selectedIndex !== buildtooljsElement.selectedIndex) {
-    frameworkjsElement.selectedIndex = buildtooljsElement.selectedIndex;
-  }
-});
-
-pLanguageElement.listen('MDCSelect:change', () => {
-  console.log(`Selected language at index ${pLanguageElement.selectedIndex} with value "${pLanguageElement.value}"`);
-  const javaConfig = document.getElementById('java-configurator');
-  const pyConfig = document.getElementById('python-configurator');
-  const jsConfig = document.getElementById('javascript-configurator');
-  if (pLanguageElement.value === 'java') {
-    javaConfig.style.display = 'inline';
-    pyConfig.style.display = 'none';
-    jsConfig.style.display = 'none';
-  } else if (pLanguageElement.value === 'python') {
-    javaConfig.style.display = 'none';
-    jsConfig.style.display = 'none';
-    pyConfig.style.display = 'inline';
-  } else if(pLanguageElement.value === 'javascript'){
-    javaConfig.style.display = 'none';
-    jsConfig.style.display = 'inline';
-    pyConfig.style.display = 'node';
-  }
-});
-
-toConfigProjectButton.onclick = function () {
-  console.log("to config clicked!");
-  
-  var home = document.querySelector('#home');
-  var projectConfig = document.querySelector('#pconfig');
-  var linkButton = document.querySelector('#link_button');
-  var user_info_div = document.querySelector('#user_info');
-  if (home.style.display === 'none'){
-    // show home
-    home.style.display = 'inline';
-    home.disabled = false;
-    // hide project config
-    projectConfig.style.display = 'none';
-    linkButton.innerHTML = "New project";
-    user_info_div.style.display = "inline";
-    user_info_div.disabled = false;
-  } else {
-    // hide home
-    home.style.display = 'none';
-    // Show project configuration
-    projectConfig.style.display = 'inline';
-    projectConfig.disabled = false;
-    linkButton.innerHTML = "My repos";
-    user_info_div.style.display = "none";
-  }
-}
-
-
-createProject.onclick = function () {
-  errorMessage.innerHTML = '';
-  // Validate project name
-  if (!pnameElement.valid) {
-    errorMessage.innerHTML = 'Please provide the project name';
-    return false;
-  }
-  var projectName = pnameElement.value;
-  console.log('Project name: ', projectName);
-
-  // Get language
-  const language = pLanguageElement.value;
-  console.log('Language selected: ', language);
-  // Get Build Tool
-  const buildtool = buildtoolElement.value;
-  console.log('Build tool selected: ', buildtool);
-  // Get Framework
-  const framework = frameworkElement.value;
-  console.log('Framework selected: ', framework);
-
-
-  // build project type
-  var ptype = language;
-  if (buildtool !== 'none') {
-    ptype = ptype + '-' + buildtool;
-  }
-  if (framework !== 'none') {
-    ptype = ptype + '-' + framework;
-  }
-  console.log('Project type: ', ptype);
-
-  var isPrivate = isPrivateSwitch.checked;
-
-  // Send message to background script
-  chrome.runtime.sendMessage({
-    directive: "create-project", pname: projectName, ptype: ptype, isPrivate: isPrivate
-  });
-
-  var loadingImage = document.querySelector('#loading_for_creation');
-  showLoadingImage(loadingImage);
-  createProject.disabled = true;
-  return true;
-};
-
-chrome.runtime.onMessage.addListener(
-  function (request, sender, sendResponse) {
-    console.log('Popup got message:', request);
-    if (request.errorMessage) {
-      var loadingImage = document.querySelector('#loading_for_creation');
-      hideLoadingImage(loadingImage);
-      errorMessage.innerHTML = request.errorMessage;
-      createProject.disabled = false;
-    }
-  }
-);
+const list = new MDCList(document.querySelector('.mdc-list'));
 
 function showLoadingImage(loadingImage) {
   loadingImage.style.display = 'inline';
@@ -163,6 +13,15 @@ function showLoadingImage(loadingImage) {
 function hideLoadingImage(loadingImage) {
   loadingImage.style.display = 'none';
 }
+
+list.listen('MDCList:action', (event) => {
+  let selectedElement = list.listElements[event.detail.index];
+  //console.log("Primary text:",list.getPrimaryText(selectedElement));
+  //console.log("Attribute:",selectedElement.getAttribute("html_url"));
+  chrome.tabs.create({
+    url: 'https://gitpod.io/#' + selectedElement.getAttribute("html_url")
+  });
+});
 
 var gh = (function () {
   'use strict';
@@ -431,29 +290,42 @@ var gh = (function () {
     elem.appendChild(nameElem);
   }
 
-
-
   function fetchUserRepos(repoUrl) {
     xhrWithAuth('GET', repoUrl, false, onUserReposFetched);
   }
 
   function onUserReposFetched(error, status, response) {
     var elem = document.querySelector('#home');
-    elem.innerHTML = '';
-    elem.innerHTML += "<p><b>Your repos:</b></p>";
+    let p = document.createElement("p");
+    p.innerHTML = "<b>Your repos:</b>";
+    elem.appendChild(p);
+    let ul = document.getElementById('repo-list');
     if (!error && status == 200) {
       //console.log("Got the following user repos:", response);
       var user_repos = JSON.parse(response);
+      var first = true;
       user_repos.forEach(function (repo) {
-        var content = '<p><a href="https://gitpod.io/#'+repo.html_url+'" target="_blank">';
+        let li = document.createElement("li");
+        if (first){
+          li.tabIndex = "0";
+          first=false;
+        }
         if (repo.private) {
           content += "[private repo]";
         } else {
-          content += repo.name;
+          li.classList.add("mdc-list-item");
+          li.setAttribute("html_url",repo.html_url);
+          let span1 = document.createElement("span");
+          span1.classList.add("mdc-list-item__ripple");
+          li.appendChild(span1);
+          let span2 = document.createElement("span");
+          span2.classList.add("mdc-list-item__text");
+          span2.innerHTML = repo.name;
+          li.appendChild(span2);
         }
-        content += "</a></p>";
-        elem.innerHTML += content;
+        ul.appendChild(li);
       });
+      elem.appendChild(ul);
     } else {
       console.log('infoFetch failed', error, status);
     }
