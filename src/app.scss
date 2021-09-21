@@ -1,6 +1,6 @@
 @use '@material/button/mdc-button';
 @use '@material/button';
-@use "@material/list/mdc-list";
+@use "@material/list";
 @use "@material/menu-surface/mdc-menu-surface";
 @use "@material/menu/mdc-menu";
 @use "@material/select/mdc-select";
@@ -17,6 +17,7 @@
 @include form-field.core-styles;
 @include switch.core-styles;
 @include textfield.core-styles;
+@include list.core-styles;
 
 html, body {
   color: #333;

@@ -1,7 +1,9 @@
 // Copyright 2020 Marcello Monachesi
+import {MDCList} from '@material/list';
 
 'use strict';
 
+const list = new MDCList(document.querySelector('.mdc-list'));
 
 function showLoadingImage(loadingImage) {
   loadingImage.style.display = 'inline';
@@ -11,6 +13,15 @@ function showLoadingImage(loadingImage) {
 function hideLoadingImage(loadingImage) {
   loadingImage.style.display = 'none';
 }
+
+list.listen('MDCList:action', (event) => {
+  let selectedElement = list.listElements[event.detail.index];
+  //console.log("Primary text:",list.getPrimaryText(selectedElement));
+  //console.log("Attribute:",selectedElement.getAttribute("html_url"));
+  chrome.tabs.create({
+    url: 'https://gitpod.io/#' + selectedElement.getAttribute("html_url")
+  });
+});
 
 var gh = (function () {
   'use strict';
@@ -285,21 +296,36 @@ var gh = (function () {
 
   function onUserReposFetched(error, status, response) {
     var elem = document.querySelector('#home');
-    elem.innerHTML = '';
-    elem.innerHTML += "<p><b>Your repos:</b></p>";
+    let p = document.createElement("p");
+    p.innerHTML = "<b>Your repos:</b>";
+    elem.appendChild(p);
+    let ul = document.getElementById('repo-list');
     if (!error && status == 200) {
       //console.log("Got the following user repos:", response);
       var user_repos = JSON.parse(response);
+      var first = true;
       user_repos.forEach(function (repo) {
-        var content = '<p><a href="https://gitpod.io/#'+repo.html_url+'" target="_blank">';
+        let li = document.createElement("li");
+        if (first){
+          li.tabIndex = "0";
+          first=false;
+        }
         if (repo.private) {
           content += "[private repo]";
         } else {
-          content += repo.name;
+          li.classList.add("mdc-list-item");
+          li.setAttribute("html_url",repo.html_url);
+          let span1 = document.createElement("span");
+          span1.classList.add("mdc-list-item__ripple");
+          li.appendChild(span1);
+          let span2 = document.createElement("span");
+          span2.classList.add("mdc-list-item__text");
+          span2.innerHTML = repo.name;
+          li.appendChild(span2);
         }
-        content += "</a></p>";
-        elem.innerHTML += content;
+        ul.appendChild(li);
       });
+      elem.appendChild(ul);
     } else {
       console.log('infoFetch failed', error, status);
     }
