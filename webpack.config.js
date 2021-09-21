@@ -44,7 +44,11 @@ module.exports = {
           {
             loader: 'postcss-loader',
             options: {
-               plugins: () => [autoprefixer()]
+              postcssOptions: {
+                plugins: [
+                  autoprefixer()
+                ]
+              }
             }
           },
           {
@@ -63,8 +67,7 @@ module.exports = {
         ]
       },
       {
-        // Load only for project_configuration.js
-        test: /project_builder\.js$/,
+        test: /\.js$/,
         loader: 'babel-loader',
         query: {
           presets: ['@babel/preset-env'],

@@ -5,19 +5,8 @@ import {MDCList} from '@material/list';
 
 const list = new MDCList(document.querySelector('.mdc-list'));
 
-function showLoadingImage(loadingImage) {
-  loadingImage.style.display = 'inline';
-  loadingImage.disabled = false;
-}
-
-function hideLoadingImage(loadingImage) {
-  loadingImage.style.display = 'none';
-}
-
 list.listen('MDCList:action', (event) => {
   let selectedElement = list.listElements[event.detail.index];
-  //console.log("Primary text:",list.getPrimaryText(selectedElement));
-  //console.log("Attribute:",selectedElement.getAttribute("html_url"));
   chrome.tabs.create({
     url: 'https://gitpod.io/#' + selectedElement.getAttribute("html_url")
   });
@@ -31,7 +20,6 @@ var gh = (function () {
   var projectConfig;
   var home;
   var loadingImage;
-
 
   var tokenFetcher = (function () {
     // If a malicious party uses client_id and client_secret 
