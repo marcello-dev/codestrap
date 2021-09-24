@@ -8,14 +8,17 @@
 @use "@material/line-ripple/mdc-line-ripple";
 @use "@material/notched-outline/mdc-notched-outline";
 @use "@material/textfield";
-@use "@material/switch";
+
+
+@use '@material/switch/styles';
+
+
 @use "@material/radio";
 @use "@material/form-field";
 
 @include radio.core-styles;
 // Only if radio button used with form
 @include form-field.core-styles;
-@include switch.core-styles;
 @include textfield.core-styles;
 @include list.core-styles;
 
