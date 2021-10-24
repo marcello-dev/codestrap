@@ -1,5 +1,6 @@
 // Copyright 2020 Marcello Monachesi
 import { Octokit } from "@octokit/rest";
+import regeneratorRuntime from "regenerator-runtime";
 
 'use strict';
 
