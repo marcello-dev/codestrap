@@ -15,7 +15,7 @@
 
   <!-- SIGN IN BUTTON -->
   <div class="mdc-touch-target-wrapper" >
-    <button id="signin" class="mdc-button mdc-button--outlined mdc-button--touch mdc-button--raised signin-button" style="display:none" >
+    <button id="signin" class="mdc-button mdc-button--touch mdc-button--outlined signin-button" style="display:none" >
       <div class="mdc-button__ripple"></div>
       <span class="mdc-button__label">Sign in to GitHub</span>
       <div class="mdc-button__touch"></div>
@@ -24,10 +24,26 @@
 
   <!-- Home page -->
   <div id="home_container">
-    <p><a href="project_builder.html">New project</a></p>
+    
     <div id="home" style="display:none">
+      <!-- REVOKE BUTTON -->
+      <div class="mdc-touch-target-wrapper" >
+        <button id="revoke" class="mdc-button mdc-button--touch mdc-button--outlined" style="display:none" >
+          <div class="mdc-button__ripple"></div>
+          <span class="mdc-button__label">Revoke token</span>
+          <div class="mdc-button__touch"></div>
+        </button>
+      </div>
+      <div class="mdc-touch-target-wrapper">
+        <button id="newproject" class="mdc-button mdc-button--touch mdc-button--outlined" >
+          <div class="mdc-button__ripple"></div>
+          <span class="mdc-button__label">New project</span>
+          <div class="mdc-button__touch"></div>
+        </button>
+      </div>
+
       <ul id="repo-list" class="mdc-list">
-        
+
       </ul>
     </div>
   </div>

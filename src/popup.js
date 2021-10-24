@@ -1,23 +1,16 @@
 // Copyright 2020 Marcello Monachesi
 import {MDCList} from '@material/list';
+import {MDCRipple} from '@material/ripple';
 
 'use strict';
 
 const list = new MDCList(document.querySelector('.mdc-list'));
-
-function showLoadingImage(loadingImage) {
-  loadingImage.style.display = 'inline';
-  loadingImage.disabled = false;
-}
-
-function hideLoadingImage(loadingImage) {
-  loadingImage.style.display = 'none';
-}
+const signinElement = new MDCRipple(document.getElementById('signin'));
+const revokeElement = new MDCRipple(document.getElementById('revoke'));
+const newprojectElement = new MDCRipple(document.getElementById('revoke'));
 
 list.listen('MDCList:action', (event) => {
   let selectedElement = list.listElements[event.detail.index];
-  //console.log("Primary text:",list.getPrimaryText(selectedElement));
-  //console.log("Attribute:",selectedElement.getAttribute("html_url"));
   chrome.tabs.create({
     url: 'https://gitpod.io/#' + selectedElement.getAttribute("html_url")
   });
@@ -31,7 +24,8 @@ var gh = (function () {
   var projectConfig;
   var home;
   var loadingImage;
-
+  var revoke_button;
+  var newproject_button;
 
   var tokenFetcher = (function () {
     // If a malicious party uses client_id and client_secret 
@@ -273,6 +267,7 @@ var gh = (function () {
       var user_info = JSON.parse(response);
       populateUserInfo(user_info);
       hideButton(signin_button);
+      showButton(revoke_button);
       fetchUserRepos(user_info.repos_url);
       showHome(user_info)
     } else {
@@ -344,6 +339,11 @@ var gh = (function () {
     });
   }
 
+  function toPageProjectBuilder() {
+    console.log("To project builder");
+    location.href = 'project_builder.html';
+  }
+
   function revokeToken() {
     // We are opening the web page that allows user to revoke their token.
     window.open('https://github.com/settings/applications');
@@ -352,13 +352,23 @@ var gh = (function () {
     // in again. If the user dismissed the page they were presented with,
     // Sign in button will simply sign them in.
     user_info_div.textContent = '';
+    hideButton(revoke_button);
     showButton(signin_button);
+    chrome.storage.local.remove('access_token', function () {
+      console.log("Token removed from local storage");
+    });
   }
 
   return {
     onload: function () {
       signin_button = document.querySelector('#signin');
       signin_button.onclick = interactiveSignIn;
+
+      revoke_button = document.querySelector('#revoke');
+      revoke_button.onclick = revokeToken;
+
+      newproject_button = document.querySelector('#newproject');
+      newproject_button.onclick = toPageProjectBuilder;
 
       user_info_div = document.querySelector('#user_info');
 

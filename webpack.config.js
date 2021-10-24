@@ -10,8 +10,8 @@ module.exports = {
       popup: './src/popup.js',
       project_builder: './src/project_builder.js',
       background: './src/background.js',
-      entry: './src/app.scss'
-    },
+      app: './src/app.scss'
+  },
   output: {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
@@ -44,7 +44,11 @@ module.exports = {
           {
             loader: 'postcss-loader',
             options: {
-               plugins: () => [autoprefixer()]
+              postcssOptions: {
+                plugins: [
+                  autoprefixer()
+                ]
+              }
             }
           },
           {
@@ -63,10 +67,9 @@ module.exports = {
         ]
       },
       {
-        // Load only for project_configuration.js
-        test: /project_builder\.js$/,
+        test: /\.js$/,
         loader: 'babel-loader',
-        query: {
+        options: {
           presets: ['@babel/preset-env'],
         },
       }
