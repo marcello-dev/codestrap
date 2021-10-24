@@ -1,6 +1,6 @@
 @use '@material/button/mdc-button';
 @use '@material/button';
-@use "@material/list";
+@use "@material/list/styles";
 @use "@material/menu-surface/mdc-menu-surface";
 @use "@material/menu/mdc-menu";
 @use "@material/select/mdc-select";
@@ -9,18 +9,7 @@
 @use "@material/notched-outline/mdc-notched-outline";
 @use "@material/textfield";
 
-
-@use '@material/switch/styles';
-
-
-@use "@material/radio";
-@use "@material/form-field";
-
-@include radio.core-styles;
-// Only if radio button used with form
-@include form-field.core-styles;
 @include textfield.core-styles;
-@include list.core-styles;
 
 html, body {
   color: #333;

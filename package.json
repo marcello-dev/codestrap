@@ -35,12 +35,11 @@
     "@material/form-field": "^12.0.0",
     "@material/list": "^12.0.0",
     "@material/menu": "^12.0.0",
-    "@material/radio": "^12.0.0",
     "@material/ripple": "^12.0.0",
     "@material/select": "^12.0.0",
     "@material/switch": "^12.0.0",
     "@material/textfield": "^12.0.0",
-    "@octokit/rest": "^18.10.0",
+    "@octokit/rest": "^18.11.0",
     "install": "^0.13.0"
   }
 }

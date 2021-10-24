@@ -6,14 +6,13 @@ const CopyPlugin = require('copy-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 
 module.exports = {
-  entry: {
-      popup: './src/popup.js',
-      project_builder: './src/project_builder.js',
-      background: './src/background.js',
-      entry: './src/app.scss'
-    },
+  entry: ['./src/popup.js',
+      './src/project_builder.js',
+      './src/background.js',
+      './src/app.scss'
+  ],
   output: {
-    filename: '[name].bundle.js',
+    filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
   
