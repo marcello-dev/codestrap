@@ -1,6 +1,6 @@
 @use '@material/button/mdc-button';
-@use '@material/button';
-@use "@material/list/styles";
+@use "@material/button/styles" as b-styles;
+@use "@material/list";
 @use "@material/menu-surface/mdc-menu-surface";
 @use "@material/menu/mdc-menu";
 @use "@material/select/mdc-select";
@@ -8,8 +8,11 @@
 @use "@material/line-ripple/mdc-line-ripple";
 @use "@material/notched-outline/mdc-notched-outline";
 @use "@material/textfield";
+@use '@material/switch/styles' as sw-styles;
 
 @include textfield.core-styles;
+@include list.deprecated-core-styles;
+
 
 html, body {
   color: #333;

@@ -9,6 +9,7 @@ import { MDCSwitch } from '@material/switch';
 'use strict';
 
 let createProject = document.getElementById('cproject');
+let backButton = document.getElementById('backbutton');
 var errorMessage = document.getElementById('error_message');
 
 const cprojectRipple = new MDCRipple(document.getElementById('cproject'));
@@ -19,7 +20,12 @@ const buildtooljsElement = new MDCSelect(document.getElementById('buildtool-js')
 const frameworkjsElement = new MDCSelect(document.getElementById('framework-js'));
 const isPrivateSwitch = new MDCSwitch(document.querySelector('.mdc-switch'));
 const pnameElement = new MDCTextField(document.querySelector('.mdc-text-field'));
+const backButtonRipple = new MDCRipple(document.getElementById('backbutton'));
 
+
+backButton.onclick = function () {
+  location.href = 'popup.html';
+}
 
 frameworkElement.listen('MDCSelect:change', () => {
   // Set build tool to Maven if a framework is selected

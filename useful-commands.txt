@@ -1,3 +1,4 @@
 build:
 npx webpack --config webpack.config.js
+or npm run build
 
