@@ -17,7 +17,7 @@ After you launch your first project, the code will be saved in your Github repos
 
 0. Make sure you have Node.js installed
 1. Clone the project
-2. Go in the codestrap folder `cd codestrap`
+2. Go to the codestrap folder `cd codestrap`
 3. Install webpack-cli: `npm install -D webpack-cli`
 4. Build the extension with: `npx webpack --config webpack.config.js`
 5. Open Google Chrome and go to Extensions
