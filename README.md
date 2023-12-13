@@ -1,6 +1,7 @@
 # Codestrap Chrome Extension
 
-Google Chrome extension **Codestrap**. Available [here](https://chrome.google.com/webstore/detail/codestrap/mbnccmhnjeokeihamhbhnlacdcdimflg?hl=en).
+Google Chrome extension **Codestrap**. 
+**Note**: this extension is no longer available on Google Chrome Store.  
 
 This extensions allows to bootstrap a project with few clicks:
 1. Click on the extension
@@ -18,6 +19,7 @@ After you launch your first project, the code will be saved in your Github repos
 0. Make sure you have Node.js installed
 1. Clone the project
 2. Go to the codestrap folder `cd codestrap`
+3. Install dependencies: `npm install`
 3. Install webpack-cli: `npm install -D webpack-cli`
 4. Build the extension with: `npx webpack --config webpack.config.js`
 5. Open Google Chrome and go to Extensions
